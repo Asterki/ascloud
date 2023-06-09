@@ -43,7 +43,24 @@ const Login: NextPage = () => {
 					initial="hidden"
 					animate="visible"
 					className={styles["login-form"]}
-				></motion.div>
+				>
+					<h1>Login</h1>
+					<p>Login to your AsCloud account.</p>
+					<br />
+					<br />
+					<input type="text" placeholder="Your Email" />
+					<br />
+					<br />
+					<input type="text" placeholder="Your Password" />
+					<br />
+					<br />
+					<button className={styles["register-button"]}>Login</button>
+					<br />
+					<br />
+					<p>
+						Don't have an account? <Link href="/register">Register</Link>
+					</p>
+				</motion.div>
 			</main>
 
 			<div className={styles["footer"]}>
