@@ -1,0 +1,68 @@
+.page {
+	main {
+		min-height: 100vh;
+		width: 100%;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		.register-form {
+			width: 20%;
+
+			background-color: #3c3f58;
+			padding: 20px;
+			border-radius: 10px;
+			border: 2px solid #5558773a;
+
+			filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.13));
+
+			text-align: center;
+
+			p {
+				color: rgba(255, 255, 255, 0.486);
+				margin: 0;
+			}
+
+			h1 {
+				margin: 0;
+			}
+
+			input {
+				width: calc(100% - 24px);
+				border-radius: 10px;
+				padding: 10px;
+				outline: none;
+				border: 2px solid #5558773a;
+
+				background-color: #3c3f58;
+				color: white;
+
+				transition: all 0.2s ease-in-out;
+				&:focus {
+					border: 2px solid #3bba9c83;
+				}
+			}
+
+			.register-button {
+				padding: 10px;
+				border-radius: 10px;
+				width: 100%;
+
+				background-color: #3bba9c;
+				color: white;
+
+				border: none;
+				outline: none;
+			}
+
+            .activate-tfa-input {
+                text-align: left;
+
+                input {
+                    width: auto;
+                }
+            }
+		}
+	}
+}
