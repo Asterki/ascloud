@@ -76,3 +76,30 @@ passport.use(
 // For authentication on each request
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
+
+const registerUser = async (email: string, username: string, password: string) => {
+    // Validate if either the email and the username are in use
+    const userFound: (User & Document) | null = await UserModel.findOne({ $or: [{ username: username.toLowerCase() }, { email: email }] });
+    if (userFound) return "username-email-in-use";
+
+    // Create the user object
+    const userID = uuidv4();
+    const user: (User & Document) = new UserModel({
+        userID: userID,
+        created: Date.now(),
+
+        email: { value: email, verified: false },
+        username: username.toLowerCase(),
+
+        password: bcrypt.hashSync(password, 10),
+        tfa: {
+            secret: ""
+        }
+    } as User);
+
+    // Save the user
+    user.save();
+    return user;
+}
+
+export { registerUser }
