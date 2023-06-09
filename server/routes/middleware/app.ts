@@ -1,6 +1,6 @@
 import path from "path";
 import express from "express";
-import favicon from "serve-favicon";
+// import favicon from "serve-favicon";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
@@ -17,7 +17,7 @@ app.use(compression());
 app.use(cors({ origin: "*" }));
 
 // Static content
-app.use(favicon(path.join(__dirname, `${rootPath}/public/favicon.ico`)));
+// app.use(favicon(path.join(__dirname, `${rootPath}/public/favicon.ico`)));
 app.use("/avatars/", express.static(path.join(__dirname, `${rootPath}/data/avatars`)));
 
 export {};
