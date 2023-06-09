@@ -7,3 +7,12 @@ body {
     color: white;
     background-color: #2e3047;
 }
+
+a {
+    color: #3bba9c;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
