@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development nodemon --config ./nodemon.json ./server/index.ts",
 		"start": "npm-run-all start:*",
-		"start:clean": "rm -rf ./build/*",
+		"start:clean": "rm -rf ./build/* && npm i",
 		"start:build-server": "tsc -p ./server/tsconfig.json",
 		"start:build-client": "next build",
 		"start:run-server": "cross-env NODE_ENV=production node ./build/server/index.js",
@@ -33,6 +33,7 @@
 		"mongoose": "^7.2.2",
 		"next": "13.4.4",
 		"nodemailer": "^6.9.3",
+		"npm-run-all": "^4.1.5",
 		"passport": "^0.6.0",
 		"passport-local": "^1.0.0",
 		"passport-local-mongoose": "^8.0.0",

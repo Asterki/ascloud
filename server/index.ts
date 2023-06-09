@@ -7,11 +7,13 @@ import chalk from "chalk";
 import path from "path";
 import dotenv from "dotenv";
 
-dotenv.config({ path: path.join(__dirname, "../.env.local") });
+const dev = process.env.NODE_ENV == "development"
+
+dotenv.config({ path: path.join(__dirname, dev ? "../.env.local" : "../.env.production") });
 
 // Declare the servers that we're gonna use
 const app = express();
-const nextApp = next({ dev: process.env.NODE_ENV == "development" });
+const nextApp = next({ dev: dev });
 const server = http.createServer(app);
 
 nextApp.prepare().then(() => {
@@ -29,7 +31,7 @@ nextApp.prepare().then(() => {
     // Start the main server
     server.listen(process.env.PORT, () => {
         console.log(
-            `- ${chalk.magenta("event")} - Server running in ${process.env.NODE_ENV == "development" ? "development" : "production"} mode at ${process.env.PORT}`
+            `- ${chalk.magenta("event")} - Server running in ${dev ? "development" : "production"} mode at ${process.env.PORT}`
         );
     });
 });
