@@ -19,6 +19,7 @@ nextApp.prepare().then(() => {
 
     // Load all the configuration
     require("./services/databases");
+    require("./services/accounts")
     require("./routes/router");
 
     app.get("*", (req: express.Request, res: express.Response) => {
@@ -28,7 +29,7 @@ nextApp.prepare().then(() => {
     // Start the main server
     server.listen(process.env.PORT, () => {
         console.log(
-            `${chalk.magenta("event")} - Server running in ${process.env.NODE_ENV == "development" ? "development" : "production"} mode at ${process.env.PORT}`
+            `- ${chalk.magenta("event")} - Server running in ${process.env.NODE_ENV == "development" ? "development" : "production"} mode at ${process.env.PORT}`
         );
     });
 });

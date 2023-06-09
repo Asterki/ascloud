@@ -14,12 +14,12 @@ const mongooseClient = mongoose.connection;
 
 // Events for the mongoose client
 mongooseClient.once('open', () => {
-    console.log(`${chalk.magenta("event")} - MongoDB database connected`);
+    console.log(`- ${chalk.magenta("event")} - MongoDB database connected`);
 });
 
 mongooseClient.once('error', (error: Error) => {
     console.log(
-        `${chalk.red(
+        `- ${chalk.red(
             'Error'
         )} - There was an error trying to connect to MongoDB`
     );
