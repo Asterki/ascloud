@@ -1,13 +1,18 @@
 import express from "express";
+import passport from "passport";
 
 import { z } from "zod"
 import validator from "validator"
 
 import { registerUser } from "../../services/accounts";
+import { RegisterRequestBody, RegisterResponse, LoginRequestBody, LoginResponse } from "../../../shared/types/api/accounts"
+
+import { User } from "../../../shared/types/models";
 
 const router: express.Router = express.Router();
 
-router.post("/register", async (req: express.Request, res: express.Response) => {
+// Account creation and deletion
+router.post("/register", async (req: express.Request<unknown, RegisterResponse, RegisterRequestBody>, res: express.Response<RegisterResponse>) => {
     try {
         // Validate fields
         const parsedBody = z
@@ -44,5 +49,43 @@ router.post("/register", async (req: express.Request, res: express.Response) => 
     }
 
 })
+
+// Account access
+router.post(
+    "/login",
+    (req: express.Request<unknown, LoginResponse, LoginRequestBody>, res: express.Response<LoginResponse>, next) => {
+        try {
+            const parsedBody = z
+                .object({
+                    usernameOrEmail: z.string(),
+                    password: z.string(),
+                    tfaCode: z.string().optional(),
+                })
+                .required()
+                .safeParse(req.body);
+
+            if (!parsedBody.success && 'error' in parsedBody) return res.status(400).send("invalid-parameters");
+
+            passport.authenticate(
+                "local",
+                (
+                    err: unknown | null,
+                    user: User,
+                    result: { message: "invalid-credentials" | "requires-tfa" | "invalid-tfa-code" }
+                ) => {
+                    if (err) throw err;
+                    if (!user) return res.send(result.message);
+
+                    req.logIn(user, (err: unknown) => {
+                        if (err) throw err;
+                        return res.send("done");
+                    });
+                }
+            )(req, res, next);
+        } catch (err: unknown) {
+            res.status(500).send("server-error")
+        }
+    }
+);
 
 module.exports = router;

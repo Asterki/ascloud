@@ -44,6 +44,41 @@ const template: typeof LangPack = {
             },
 
             footer: "",
+        },
+        login: {
+            pageTitle: "",
+
+            form: {
+                title: "",
+                caption: "",
+
+                emailUsernamePlaceholder: "",
+                passwordPlaceholder: "",
+
+                login: "",
+
+                noAccount: "",
+            },
+
+            tfaModal: {
+                title: "",
+                placeholder: "",
+                submit: "",
+            },
+
+            errorModal: {
+                title: "",
+                close: "",
+
+                errors: {
+                    "invalid-credentials": "",
+                    "invalid-tfa-code": "",
+                    "server-error": "",
+                    "invalid-parameters": "",
+                }
+            },
+
+            footer: ""
         }
     }
 }

@@ -39,7 +39,7 @@ app.use(passport.session());
 passport.use(
     new passportLocal.Strategy(
         {
-            usernameField: "email",
+            usernameField: "usernameOrEmail",
             passwordField: "password",
             passReqToCallback: true,
             session: true,
@@ -47,7 +47,7 @@ passport.use(
         async (req: express.Request, _email: string, _password: string, done) => {
             try {
                 const user: (User & Document) | null = await UserModel.findOne({
-                    $or: [{ "email.value": req.body.email }, { username: req.body.email }],
+                    $or: [{ "email.value": req.body.usernameOrEmail }, { username: req.body.usernameOrEmail }],
                 });
                 if (!user) return done(null, false, { message: "invalid-credentials" });
 

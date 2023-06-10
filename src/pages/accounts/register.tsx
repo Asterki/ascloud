@@ -15,6 +15,7 @@ import { RootState } from "../../store";
 
 import styles from "../../styles/accounts/register.module.scss";
 import { GetServerSideProps, NextPage } from "next";
+import { RegisterRequestBody, RegisterResponse } from "../../../shared/types/api/accounts";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	if (context.req.isAuthenticated())
@@ -53,6 +54,7 @@ const Register: NextPage = () => {
 		const username = usernameInput.current!.value;
 		const password = passwordInput.current!.value;
 		const repeatPassword = repeatPasswordInput.current!.value;
+        const activateTFA = activateTFAInput.current!.checked
 
 		// Generally this is to ensure the user didn't typed out random things
 		if (password !== repeatPassword)
@@ -88,10 +90,10 @@ const Register: NextPage = () => {
 				});
 
 			// Send the request
-			const response: AxiosResponse = await axios({
+			const response: AxiosResponse<RegisterResponse> = await axios({
 				url: "/api/accounts/register",
 				method: "POST",
-				data: parsedBody.data,
+				data: parsedBody.data as RegisterRequestBody,
 			});
 
 			// Switch on the response
@@ -105,7 +107,8 @@ const Register: NextPage = () => {
 					break;
 
 				case "done":
-					router.push("/home");
+					if (activateTFA) return router.push("/settings/tfa");
+                    else router.push("/home");
 					break;
 			}
 		} catch (error: unknown) {
@@ -164,10 +167,10 @@ const Register: NextPage = () => {
 					<input type="text" placeholder={lang.form.emailPlaceholder} ref={emailInput} />
 					<br />
 					<br />
-					<input type="text" placeholder={lang.form.passwordPlaceholder} ref={passwordInput} />
+					<input type="password" placeholder={lang.form.passwordPlaceholder} ref={passwordInput} />
 					<br />
 					<br />
-					<input type="text" placeholder={lang.form.repeatPasswordPlaceholder} ref={repeatPasswordInput} />
+					<input type="password" placeholder={lang.form.repeatPasswordPlaceholder} ref={repeatPasswordInput} />
 					<br />
 					<br />
 					<div className={styles["activate-tfa-input"]}>

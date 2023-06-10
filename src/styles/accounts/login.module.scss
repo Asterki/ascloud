@@ -1,4 +1,20 @@
 .page {
+	input {
+		width: calc(100% - 24px);
+		border-radius: 10px;
+		padding: 10px;
+		outline: none;
+		border: 2px solid #5558773a;
+
+		background-color: #3c3f58;
+		color: white;
+
+		transition: all 0.2s ease-in-out;
+		&:focus {
+			border: 2px solid #3bba9c83;
+		}
+	}
+
 	main {
 		min-height: 100vh;
 		width: 100%;
@@ -26,22 +42,6 @@
 
 			h1 {
 				margin: 0;
-			}
-
-			input {
-				width: calc(100% - 24px);
-				border-radius: 10px;
-				padding: 10px;
-				outline: none;
-				border: 2px solid #5558773a;
-
-				background-color: #3c3f58;
-				color: white;
-
-				transition: all 0.2s ease-in-out;
-				&:focus {
-					border: 2px solid #3bba9c83;
-				}
 			}
 
 			.register-button {
