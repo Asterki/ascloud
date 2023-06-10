@@ -78,7 +78,7 @@ const Login: NextPage = () => {
 
 			switch (response.data) {
 				case "done":
-					router.push("/home");
+					router.push("/home?login=true");
 					break;
 
 				case "requires-tfa":

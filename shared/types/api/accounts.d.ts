@@ -1,3 +1,4 @@
+// Register
 interface RegisterRequestBody {
     username: string;
     email: string;
@@ -6,6 +7,15 @@ interface RegisterRequestBody {
 
 type RegisterResponse = "username-email-in-use" | "done" | "server-error" | "invalid-parameters"
 
+// Delete account
+interface DeleteAccountRequestBody {
+    password: string;
+    tfaCode: string;
+}
+
+type DeleteAccountResponse = "invalid-tfa" | "invalid-password" | "invalid-parameters" | "requires-tfa" | "done" | "unauthorized";
+
+// Login
 interface LoginRequestBody {
     usernameOrEmail: string;
     password: string;
@@ -14,4 +24,7 @@ interface LoginRequestBody {
 
 type LoginResponse = "invalid-credentials" | "requires-tfa" | "invalid-tfa-code" | "server-error" | "invalid-parameters" | "done"
 
-export type { RegisterRequestBody, RegisterResponse, LoginRequestBody, LoginResponse }
+// Logout
+type LogoutResponse = "done" | "server-error"
+
+export type { RegisterRequestBody, RegisterResponse, LoginRequestBody, LoginResponse, LogoutResponse, DeleteAccountRequestBody, DeleteAccountResponse }

@@ -4,8 +4,8 @@ import passport from "passport";
 import { z } from "zod"
 import validator from "validator"
 
-import { registerUser } from "../../services/accounts";
-import { RegisterRequestBody, RegisterResponse, LoginRequestBody, LoginResponse } from "../../../shared/types/api/accounts"
+import { registerUser, deleteUser } from "../../services/accounts";
+import { RegisterRequestBody, RegisterResponse, LoginRequestBody, LoginResponse, LogoutResponse, DeleteAccountRequestBody, DeleteAccountResponse } from "../../../shared/types/api/accounts"
 
 import { User } from "../../../shared/types/models";
 
@@ -50,6 +50,38 @@ router.post("/register", async (req: express.Request<unknown, RegisterResponse, 
 
 })
 
+router.post(
+    "/delete-account",
+    async (
+        req: express.Request<unknown, DeleteAccountResponse, DeleteAccountRequestBody>,
+        res: express.Response<DeleteAccountResponse>
+    ) => {
+        if (!req.isAuthenticated() || req.user == undefined) return res.status(403).send("unauthorized");
+
+        try {
+            const parsedBody = z
+                .object({
+                    password: z.string(),
+                    tfaCode: z.string().optional(),
+                })
+                .required()
+                .safeParse(req.body);
+
+            if (!parsedBody.success && 'error' in parsedBody) return res.status(400).send("invalid-parameters");
+
+            const result = await deleteUser(req.user as User, parsedBody.data.password, parsedBody.data.tfaCode);
+            if (result !== "done") return res.send(result);
+
+            req.logout(async (err: unknown) => {
+                if (err) throw err;
+                return res.status(200).send("done");
+            });
+        } catch (err: unknown) {
+            return res.status(500);
+        }
+    }
+);
+
 // Account access
 router.post(
     "/login",
@@ -87,5 +119,19 @@ router.post(
         }
     }
 );
+
+router.post("/logout", (req: express.Request<unknown, LogoutResponse, unknown>, res: express.Response<LogoutResponse>) => {
+    try {
+        if (!req.isAuthenticated()) return res.send("done");
+
+        // Logout
+        req.logout((err: unknown) => {
+            if (err) throw err;
+            res.send("done");
+        });
+    } catch (err: unknown) {
+        res.status(500).send("server-error")
+    }
+});
 
 module.exports = router;

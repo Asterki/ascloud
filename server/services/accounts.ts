@@ -102,4 +102,27 @@ const registerUser = async (email: string, username: string, password: string) =
     return user;
 }
 
-export { registerUser }
+const deleteUser = async (
+    user: User,
+    password: string,
+    tfaCode: string
+): Promise<"requires-tfa" | "invalid-password" | "invalid-tfa" | "done"> => {
+    // Comparing password and tfa
+    if (!bcrypt.compareSync(password, user.password)) return "invalid-password";
+    if (user.tfa.secret !== "") {
+        if (!tfaCode) return "requires-tfa";
+
+        const verified = speakeasy.totp.verify({
+            secret: user.tfa.secret,
+            encoding: "base32",
+            token: tfaCode,
+        });
+
+        if (verified == false) return "invalid-tfa";
+    }
+
+    await UserModel.deleteOne({ userID: user.userID });
+    return "done";
+};
+
+export { registerUser, deleteUser }

@@ -12,6 +12,10 @@ const nextConfig = {
 				source: "/",
 				destination: "/main",
 			},
+            {
+				source: "/home",
+				destination: "/main/home",
+			},
 
 			// Accounts
 			{

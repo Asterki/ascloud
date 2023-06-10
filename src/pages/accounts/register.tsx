@@ -108,7 +108,7 @@ const Register: NextPage = () => {
 
 				case "done":
 					if (activateTFA) return router.push("/settings/tfa");
-                    else router.push("/home");
+                    else router.push("/home?login=true");
 					break;
 			}
 		} catch (error: unknown) {
