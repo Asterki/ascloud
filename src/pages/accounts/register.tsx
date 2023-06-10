@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
 const Register: NextPage = () => {
 	const appState = useSelector((state: RootState) => state);
-	const lang = appState.page.lang.main.index;
+	const lang = appState.page.lang.accounts.register;
 	const router = useRouter();
 
 	const [modalState, setModalState] = React.useState({
@@ -55,7 +55,8 @@ const Register: NextPage = () => {
 		const repeatPassword = repeatPasswordInput.current!.value;
 
 		// Generally this is to ensure the user didn't typed out random things
-		if (password !== repeatPassword) return setModalState({ open: true, title: "Error", message: "password-match" });
+		if (password !== repeatPassword)
+			return setModalState({ open: true, title: "Error", message: lang.modal.errors["password-match"] });
 
 		// All of these conditions are re-checked in the server
 		try {
@@ -80,7 +81,11 @@ const Register: NextPage = () => {
 				.safeParse({ email: email, username: username, password: password });
 
 			if (!parsedBody.success && "error" in parsedBody)
-				return setModalState({ open: true, title: "Error", message: parsedBody.error.errors[0].message });
+				return setModalState({
+					open: true,
+					title: "Error",
+					message: lang.modal.errors[parsedBody.error.errors[0].message as keyof typeof lang.modal.errors],
+				});
 
 			// Send the request
 			const response: AxiosResponse = await axios({
@@ -92,11 +97,11 @@ const Register: NextPage = () => {
 			// Switch on the response
 			switch (response.data) {
 				case "username-email-in-use":
-					setModalState({ open: true, title: "Error", message: "username-in-use" });
+					setModalState({ open: true, title: "Error", message: lang.modal.errors["username-in-use"] });
 					break;
 
 				case "server-error":
-					setModalState({ open: true, title: "Error", message: "unknown" });
+					setModalState({ open: true, title: "Error", message: lang.modal.errors["unknown"] });
 					break;
 
 				case "done":
@@ -119,9 +124,13 @@ const Register: NextPage = () => {
 						setModalState({ ...modalState, open: false });
 					}}
 				>
-					Close
+					{lang.modal.close}
 				</button>
 			</Modal>
+
+			<Head>
+				<title>{lang.pageTitle}</title>
+			</Head>
 
 			<main>
 				<motion.div
@@ -145,42 +154,42 @@ const Register: NextPage = () => {
 					animate="visible"
 					className={styles["register-form"]}
 				>
-					<h1>Register</h1>
-					<p>Create an AsCloud account.</p>
+					<h1>{lang.form.title}</h1>
+					<p>{lang.form.caption}</p>
 					<br />
 					<br />
-					<input type="text" placeholder="Your Username" ref={usernameInput} />
+					<input type="text" placeholder={lang.form.usernamePlaceholder} ref={usernameInput} />
 					<br />
 					<br />
-					<input type="text" placeholder="Your Email" ref={emailInput} />
+					<input type="text" placeholder={lang.form.emailPlaceholder} ref={emailInput} />
 					<br />
 					<br />
-					<input type="text" placeholder="Your Password" ref={passwordInput} />
+					<input type="text" placeholder={lang.form.passwordPlaceholder} ref={passwordInput} />
 					<br />
 					<br />
-					<input type="text" placeholder="Repeat Your Password" ref={repeatPasswordInput} />
+					<input type="text" placeholder={lang.form.repeatPasswordPlaceholder} ref={repeatPasswordInput} />
 					<br />
 					<br />
 					<div className={styles["activate-tfa-input"]}>
 						<input type="checkbox" id="activate-tfa" ref={activateTFAInput} />
-						<label htmlFor="activate-tfa">Activate 2FA (Recommended)</label>
+						<label htmlFor="activate-tfa">{lang.form.activateTFA}</label>
 					</div>
 					<br />
 					<br />
 					<button className={styles["register-button"]} onClick={register}>
-						Register
+						{lang.form.register}
 					</button>
 					<br />
 					<br />
 					<p>
-						Already have an account? <Link href="/login">Login</Link>
+						{lang.form.haveAccount.split("&")[0]} <Link href="/login">{lang.form.haveAccount.split("&")[1]}</Link>
 					</p>
 				</motion.div>
 			</main>
 
 			<div className={styles["footer"]}>
 				<p>
-					Open source at <Link href="https://github.com/Asterki/ascloud">GitHub</Link>
+					{lang.footer} <Link href="https://github.com/Asterki/ascloud">GitHub</Link>
 				</p>
 			</div>
 		</div>
