@@ -4,15 +4,34 @@ html,
 body {
 	margin: 0;
 	font-family: "Montserrat", sans-serif;
-    color: white;
-    background-color: #2e3047;
+	color: white;
+	background-color: #2e3047;
 }
 
 a {
-    color: #3bba9c;
-    text-decoration: none;
+	color: #3bba9c;
+	text-decoration: none;
 
-    &:hover {
-        text-decoration: underline;
-    }
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+button {
+	border-radius: 5px;
+	padding: 10px;
+	border: none;
+	outline: none !important;
+
+	width: 100%;
+
+	cursor: pointer;
+
+	background-color: #3bba9c;
+	color: white;
+
+	transition: all 0.1s ease-in-out;
+	&:hover {
+		filter: brightness(1.1);
+	}
 }
