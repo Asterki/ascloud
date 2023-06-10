@@ -72,3 +72,15 @@
         left: 5px;
     }
 }
+
+
+@media screen and (max-width: 720px) {
+	.page {
+		main {
+			.register-form {
+				width: 85%;
+				padding: 50px 10px 50px 10px;
+			}
+		}
+	}
+}

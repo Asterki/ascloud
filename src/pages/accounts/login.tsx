@@ -41,7 +41,7 @@ const Login: NextPage = () => {
 		message: "",
 	});
 
-	const [TFAModalOpen, setTFAModalOpen] = React.useState(true);
+	const [TFAModalOpen, setTFAModalOpen] = React.useState(false);
 
 	const usernameOrEmailInput = React.useRef<HTMLInputElement>(null);
 	const passwordInput = React.useRef<HTMLInputElement>(null);

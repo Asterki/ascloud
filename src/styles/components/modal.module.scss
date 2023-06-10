@@ -13,7 +13,7 @@
 
 	.modal-content {
 		min-width: 300px;
-        text-align: center;
+		text-align: center;
 
 		background-color: #3c3f58;
 		padding: 20px;
@@ -60,6 +60,14 @@
 
 		&:focus {
 			border: 1px solid #5294e2;
+		}
+	}
+}
+
+@media screen and (max-width: 720px) {
+	.component {
+		.modal-content {
+			width: 85%;
 		}
 	}
 }
