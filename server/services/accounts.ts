@@ -7,6 +7,8 @@ import passportLocal from "passport-local";
 import passport from "passport";
 import express from "express";
 import speakeasy from "speakeasy";
+import { mkdirp } from 'mkdirp'
+import path from 'path'
 
 import { app } from "../";
 
@@ -96,6 +98,12 @@ const registerUser = async (email: string, username: string, password: string) =
             secret: ""
         }
     } as User);
+
+    // Create the user folders
+    mkdirp.sync(path.join(__dirname, `../../storage/${userID}/files`))
+    mkdirp.sync(path.join(__dirname, `../../storage/${userID}/temp`))
+    mkdirp.sync(path.join(__dirname, `../../storage/${userID}/shared`))
+    mkdirp.sync(path.join(__dirname, `../../storage/${userID}/bin`))
 
     // Save the user
     user.save();

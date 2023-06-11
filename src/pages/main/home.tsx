@@ -9,8 +9,9 @@ import Modal from "../../components/modal";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 
+import { store, RootState } from "@/store";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { setKeys } from "@/store/keysSlice";
 
 import styles from "../../styles/main/home.module.scss";
 import { User } from "../../../shared/types/models";
@@ -42,23 +43,21 @@ const Home: NextPage<PageProps> = (props) => {
 	const router = useRouter();
 	const appState = useSelector((state: RootState) => state);
 	const lang = appState.page.lang.accounts.register;
-
-	const [cryptoIV, setCryptoIV] = React.useState<string>("");
-	const [cryptoKey, setCryptoKey] = React.useState<string>("");
+	const keys = appState.keys;
 
 	const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(props.login);
 
 	const cryptoMethods = {
 		encrypt: (text: string, key: string, iv: string) => {
-			const cipher = crypto.createCipheriv("aes-256-ctr", key, iv);
-			let encrypted = cipher.update(text, "utf8", "hex");
-			encrypted += cipher.final("hex");
+			const cipher = crypto.createCipheriv("aes-256-ctr", key, iv); // Create the cipher to encrypt the text
+			let encrypted = cipher.update(text, "utf8", "hex"); // Encrypt the text and format it to hex
+			encrypted += cipher.final("hex"); // Add the iv
 			return encrypted;
 		},
 		decrypt: (encryptedText: string, key: string, iv: string) => {
-			const decipher = crypto.createDecipheriv("aes-256-ctr", key, iv);
-			let decrypted = decipher.update(encryptedText, "hex", "utf8");
-			decrypted += decipher.final("utf8");
+			const decipher = crypto.createDecipheriv("aes-256-ctr", key, iv); // Create the cipher to decrypt
+			let decrypted = decipher.update(encryptedText, "hex", "utf8"); // Decrypt and format the text
+			decrypted += decipher.final("utf8"); // Add the iv
 			return decrypted;
 		},
 		generatePassword: (length: number) => {
@@ -70,11 +69,12 @@ const Home: NextPage<PageProps> = (props) => {
 			return retVal;
 		},
 		updateKeys: async (key: string, iv: string) => {
+			// Set the keys in the local storage
 			await set("crypto-key", key);
 			await set("crypto-iv", iv);
 
-			setCryptoKey(key);
-			setCryptoIV(iv);
+			// Set the keys in the state
+			store.dispatch(setKeys({ iv: iv, key: key }));
 		},
 		generateKeys: () => {
 			const newKey = cryptoMethods.generatePassword(32);
@@ -86,24 +86,30 @@ const Home: NextPage<PageProps> = (props) => {
 
 	React.useEffect(() => {
 		(async () => {
-			const retrievedKey = await get("crypto-key");
-			const retrievedIV = await get("crypto-iv");
+			if (!keys.storageIV || !keys.storageKey) {
+				const retrievedKey: string | undefined = await get("crypto-key");
+				const retrievedIV: string | undefined = await get("crypto-iv");
 
-			// If no key, open modal to ask user for the key
-			if (!retrievedKey || !retrievedIV) {
-				setWelcomeModalOpen(true);
-			} else {
-				setCryptoKey(retrievedKey);
-				setCryptoIV(retrievedIV);
+				// If no key, open modal to ask user for the key
+				if (!retrievedKey || !retrievedIV) {
+					setWelcomeModalOpen(true);
+					cryptoMethods.generateKeys();
+				} else {
+					store.dispatch(setKeys({ iv: retrievedIV, key: retrievedIV }));
+				}
 			}
 		})();
 	}, []);
 
 	return (
 		<div className={styles["page"]}>
-			<Modal modalOpen={welcomeModalOpen} modalTitle="Welcome">
+			{/* <Modal modalOpen={welcomeModalOpen} modalTitle="Welcome">
 				<h1>Hey there</h1>
-			</Modal>
+			</Modal> */}
+
+			<Head>
+				<title>AsCloud - Home</title>
+			</Head>
 
 			<main>
 				<h1>watermelon</h1>

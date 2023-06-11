@@ -32,6 +32,7 @@
 		"framer-motion": "^10.12.16",
 		"idb-keyval": "^6.2.1",
 		"locale": "^0.1.0",
+		"mkdirp": "^3.0.1",
 		"mongoose": "^7.2.2",
 		"next": "13.4.4",
 		"nodemailer": "^6.9.3",

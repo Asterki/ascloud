@@ -6,6 +6,7 @@ import thunk from 'redux-thunk';
 // import { persistReducer } from 'redux-persist';
 
 import pageReducer from './pageSlice';
+import keysSlice from './keysSlice';
 
 // const reducers = combineReducers({
 // 	page: pageReducer,
@@ -21,6 +22,7 @@ import pageReducer from './pageSlice';
 export const store = configureStore({
 	reducer: {
 		page: pageReducer,
+        keys: keysSlice
 	},
 	devTools: process.env.NODE_ENV == 'development' ? true : false,
 	middleware: [thunk],
