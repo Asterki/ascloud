@@ -13,7 +13,7 @@ interface DeleteAccountRequestBody {
     tfaCode: string;
 }
 
-type DeleteAccountResponse = "invalid-tfa" | "invalid-password" | "invalid-parameters" | "requires-tfa" | "done" | "unauthorized";
+type DeleteAccountResponse = "invalid-tfa" | "invalid-password" | "invalid-parameters" | "requires-tfa" | "done" | "unauthorized" | "server-error";
 
 // Login
 interface LoginRequestBody {

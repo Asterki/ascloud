@@ -21,7 +21,8 @@ nextApp.prepare().then(() => {
 
     // Load all the configuration
     require("./services/databases");
-    require("./services/accounts")
+    require("./services/accounts");
+    // require("./services/storage");
     require("./routes/router");
 
     app.get("*", (req: express.Request, res: express.Response) => {

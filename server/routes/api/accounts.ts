@@ -47,7 +47,6 @@ router.post("/register", async (req: express.Request<unknown, RegisterResponse, 
     } catch (err: unknown) {
         res.status(500).send("server-error")
     }
-
 })
 
 router.post(
@@ -77,7 +76,7 @@ router.post(
                 return res.status(200).send("done");
             });
         } catch (err: unknown) {
-            return res.status(500);
+            res.status(500).send("server-error")
         }
     }
 );
