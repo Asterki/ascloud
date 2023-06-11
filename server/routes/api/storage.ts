@@ -14,17 +14,20 @@ router.get("/file/", (req, res) => {
         // Ensure the route is there
         const parsedQuery = z
             .object({
-                filePath: z.string(),
+                folderPath: z.string(),
+                fileName: z.string()
             })
             .required()
             .safeParse(req.query);
 
         if (!parsedQuery.success && 'error' in parsedQuery) return res.redirect("/")
 
-        const filePath = getFile((req.user as User).userID, parsedQuery.data.filePath)
+        const filePath = getFile((req.user as User).userID, parsedQuery.data.folderPath, parsedQuery.data.fileName)
         if (filePath == "no-file") return res.send(filePath)
         else return res.sendFile(filePath)
     } catch (error: unknown) {
+        console.log(error);
+        
         res.send("server-error")
     }
 })

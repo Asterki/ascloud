@@ -1,5 +1,4 @@
 import path from 'path'
-import { z } from "zod"
 import fs from 'fs-extra'
 import { mkdirp } from 'mkdirp';
 
@@ -10,20 +9,22 @@ const addTrailingSlash = (filePath: string): string => {
     return normalizedPath;
 }
 
-const getFile = (userID: string, filePath: string): string | "no-file" => {
+const getFile = (userID: string, folderPath: string, fileName: string): string | "no-file" => {
     // Ensure the file is there
-    const fileFound = addTrailingSlash(path.join(__dirname, `../../../storage/${userID}/files/${filePath}`))
-    const stats = fs.statSync(fileFound);
+    const fileFound = path.join(__dirname, `../../storage/${userID}/files`, folderPath, fileName)
+    if (!fileFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "no-file" // no path traversal attacks today guys
 
+    const stats = fs.statSync(fileFound);
     if (stats.isFile()) {
-        return filePath
+        return fileFound
     } else {
         return "no-file"
     }
 }
 
 const getFolderContents = (userID: string, folderPath: string): Array<{ isDirectory: boolean, fileName: string, fileSize: number }> | "no-folder" => {
-    const folderFound = addTrailingSlash(path.join(__dirname, `../../../storage/${userID}/files/${folderPath}`)); // Get the route
+    const folderFound = path.join(__dirname, `../../../storage/${userID}/files`, folderPath); // Get the route
+    if (!folderFound.startsWith(path.join(__dirname, `../../../storage/${userID}/files`))) return "no-folder"
 
     // Get the information about that folder path
     const stats = fs.statSync(folderFound);
@@ -47,7 +48,9 @@ const createFolder = (userID: string, folderPath: string): "done" | "folder-exis
     const folderNameRegex = /^[^\\/:*?"<>|]+$/;
     if (!folderNameRegex.test(folderPath)) return "invalid-name"
 
-    const folderFound = addTrailingSlash(path.join(__dirname, `../../../storage/${userID}/files/${folderPath}`)); // Get the route
+    const folderFound = addTrailingSlash(path.join(__dirname, `../../../storage/${userID}/files${folderPath}`)); // Get the route
+    if (!folderFound.startsWith(path.join(__dirname, `../../../storage/${userID}/files`))) return "invalid-name"
+
     // Get the information about that folder path
     const stats = fs.statSync(folderFound);
 
@@ -67,6 +70,8 @@ const upload = (userID: string, filePath: string): "done" | "file-exists" | "inv
 const deleteFileOrFolder = (userID: string, filePath: string): "done" | "no-file" => {
     // Ensure the file is there
     const fileFound = addTrailingSlash(path.join(__dirname, `../../../storage/${userID}/files/${filePath}`))
+    if (!fileFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "no-file" 
+
     const stats = fs.statSync(fileFound);
 
     if (stats.isFile()) {
@@ -80,6 +85,8 @@ const deleteFileOrFolder = (userID: string, filePath: string): "done" | "no-file
 const permanentDeleteFileOrFolder = (userID: string, filePath: string): "done" | "no-file" => {
     // Ensure the file is there
     const fileFound = addTrailingSlash(path.join(__dirname, `../../../storage/${userID}/files/${filePath}`))
+    if (!fileFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "no-file" 
+
     const stats = fs.statSync(fileFound);
 
     if (stats.isFile()) {
