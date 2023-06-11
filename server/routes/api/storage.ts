@@ -1,26 +1,17 @@
 import express from 'express'
-import path from 'path'
 import { z } from "zod"
-import fs, { stat } from 'fs'
+
+import { getFile, getFolderContents } from '../../services/storage'
 
 import { User } from '../../../shared/types/models';
 
 const router: express.Router = express.Router();
 
-const addTrailingSlash = (filePath: string): string => {
-    const normalizedPath = path.normalize(filePath);
-  
-    if (!normalizedPath.endsWith(path.sep)) {
-      return normalizedPath + path.sep;
-    }
-  
-    return normalizedPath;
-  }
-
 router.get("/file/", (req, res) => {
     if (!req.isAuthenticated() || req.user == undefined) return res.redirect("/")
 
     try {
+        // Ensure the route is there
         const parsedQuery = z
             .object({
                 filePath: z.string(),
@@ -30,14 +21,9 @@ router.get("/file/", (req, res) => {
 
         if (!parsedQuery.success && 'error' in parsedQuery) return res.redirect("/")
 
-        const filePath = addTrailingSlash(path.join(__dirname, `../../../storage/${(req.user as User).userID}/files/${parsedQuery.data.filePath}`))
-
-        const stats = fs.statSync(filePath);
-        if (stats.isFile()) {
-            res.sendFile(filePath)
-        } else {
-            res.send("no-file")
-        }
+        const filePath = getFile((req.user as User).userID, parsedQuery.data.filePath)
+        if (filePath == "no-file") return res.send(filePath)
+        else return res.sendFile(filePath)
     } catch (error: unknown) {
         res.send("server-error")
     }
@@ -47,6 +33,7 @@ router.post("/get-folder-contents", (req, res) => {
     if (!req.isAuthenticated() || req.user == undefined) return res.status(403).send("unauthorized");
 
     try {
+        // Ensure the route is there
         const parsedQuery = z
             .object({
                 folderPath: z.string(),
@@ -55,24 +42,36 @@ router.post("/get-folder-contents", (req, res) => {
             .safeParse(req.query);
 
         if (!parsedQuery.success && 'error' in parsedQuery) return res.redirect("/")
-        const folderPath = addTrailingSlash(path.join(__dirname, `../../../storage/${(req.user as User).userID}/files/${parsedQuery.data.folderPath}`));
 
-        const stats = fs.statSync(folderPath);
-        const results: Array<{ isDirectory: boolean, fileName: string, fileSize: number }> = []
-
-        if (stats.isDirectory()) {
-            fs.readdirSync(folderPath).forEach(file => {
-                const fileStat = fs.statSync(`${folderPath}${file}`)
-                results.push({ fileName: file, fileSize: fileStat.size, isDirectory: fileStat.isDirectory() })
-            });
-        } else {
-            res.send("no-folder")
-        }
-
+        const results = getFolderContents((req.user as User).userID, parsedQuery.data.folderPath)
         res.send(results)
     } catch (err: unknown) {
         res.status(500).send("server-error")
     }
+})
+
+router.post("/create-folder", (req, res) => {
+
+})
+
+router.post("/upload", (req, res) => {
+
+})
+
+router.post("/delete", (req, res) => {
+
+})
+
+router.post("/permanent-delete", (req, res) => {
+
+})
+
+router.post("/rename", (req, res) => {
+
+})
+
+router.post("/share", (req, res) => {
+
 })
 
 module.exports = router;
