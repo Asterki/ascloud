@@ -7,7 +7,7 @@ import { User } from '../../../shared/types/models';
 
 const router: express.Router = express.Router();
 
-router.get("/file/", (req, res) => {
+router.get("/file", (req, res) => {
     if (!req.isAuthenticated() || req.user == undefined) return res.redirect("/")
 
     try {
@@ -49,6 +49,7 @@ router.post("/get-folder-contents", (req, res) => {
         const results = getFolderContents((req.user as User).userID, parsedQuery.data.folderPath)
         res.send(results)
     } catch (err: unknown) {
+        console.log(err);
         res.status(500).send("server-error")
     }
 })

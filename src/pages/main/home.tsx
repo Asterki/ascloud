@@ -98,6 +98,17 @@ const Home: NextPage<PageProps> = (props) => {
 					store.dispatch(setKeys({ iv: retrievedIV, key: retrievedIV }));
 				}
 			}
+
+			const response = await axios({
+				method: "GET",
+				url: "/api/files/file",
+				params: {
+					folderPath: "wow",
+					fileName: "watermelon.txt",
+				},
+			});
+
+			console.log(response.data);
 		})();
 	}, []);
 
