@@ -95,20 +95,21 @@ const Home: NextPage<PageProps> = (props) => {
 					setWelcomeModalOpen(true);
 					cryptoMethods.generateKeys();
 				} else {
-					store.dispatch(setKeys({ iv: retrievedIV, key: retrievedIV }));
+					store.dispatch(setKeys({ iv: retrievedIV, key: retrievedKey }));
+
+					const response = await axios({
+						method: "GET",
+						url: "/api/storage/get-folder-contents",
+						params: {
+							folderPath: "wow",
+							fileName: "test.jpg",
+						},
+					});
+
+					const encrypted = cryptoMethods.encrypt(response.data, retrievedKey, retrievedIV);
+					const decrypted = cryptoMethods.decrypt(encrypted, retrievedKey, retrievedIV);
 				}
 			}
-
-			const response = await axios({
-				method: "GET",
-				url: "/api/files/file",
-				params: {
-					folderPath: "wow",
-					fileName: "watermelon.txt",
-				},
-			});
-
-			console.log(response.data);
 		})();
 	}, []);
 
