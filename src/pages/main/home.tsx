@@ -16,6 +16,10 @@ import { setKeys } from "@/store/keysSlice";
 import styles from "../../styles/main/home.module.scss";
 import { User } from "../../../shared/types/models";
 import { GetServerSideProps, NextPage } from "next";
+import {
+	GetFolderContentsRequestBody,
+	GetFolderContentsResponse,
+} from "../../../shared/types/api/storage";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	if (!context.req.isAuthenticated())
@@ -46,6 +50,10 @@ const Home: NextPage<PageProps> = (props) => {
 	const keys = appState.keys;
 
 	const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(props.login);
+	const [folderContents, setFolderContents] = React.useState<
+		Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
+	>([]);
+	const [currentPath, setCurrentPath] = React.useState("/");
 
 	const cryptoMethods = {
 		encrypt: (text: string, key: string, iv: string) => {
@@ -87,7 +95,9 @@ const Home: NextPage<PageProps> = (props) => {
 	React.useEffect(() => {
 		(async () => {
 			if (!keys.storageIV || !keys.storageKey) {
-				const retrievedKey: string | undefined = await get("crypto-key");
+				const retrievedKey: string | undefined = await get(
+					"crypto-key"
+				);
 				const retrievedIV: string | undefined = await get("crypto-iv");
 
 				// If no key, open modal to ask user for the key
@@ -95,23 +105,68 @@ const Home: NextPage<PageProps> = (props) => {
 					setWelcomeModalOpen(true);
 					cryptoMethods.generateKeys();
 				} else {
-					store.dispatch(setKeys({ iv: retrievedIV, key: retrievedKey }));
+					store.dispatch(
+						setKeys({ iv: retrievedIV, key: retrievedKey })
+					);
 
-					const response = await axios({
-						method: "GET",
-						url: "/api/storage/get-folder-contents",
-						params: {
-							folderPath: "wow",
-							fileName: "test.jpg",
-						},
-					});
+					// Get the root folder contents
+					const rootFolderResponse: AxiosResponse<GetFolderContentsResponse> =
+						await axios({
+							method: "POST",
+							url: "/api/storage/get-folder-contents",
+							params: {
+								folderPath: "/",
+							} as GetFolderContentsRequestBody,
+						});
 
-					const encrypted = cryptoMethods.encrypt(response.data, retrievedKey, retrievedIV);
-					const decrypted = cryptoMethods.decrypt(encrypted, retrievedKey, retrievedIV);
+					if (typeof rootFolderResponse.data == "object")
+						setFolderContents(rootFolderResponse.data);
 				}
 			}
 		})();
 	}, []);
+
+	React.useEffect(() => {
+		(async () => {
+			const folderResponse: AxiosResponse<GetFolderContentsResponse> =
+				await axios({
+					method: "POST",
+					url: "/api/storage/get-folder-contents",
+					params: {
+						folderPath: currentPath,
+					} as GetFolderContentsRequestBody,
+				});
+
+			if (typeof folderResponse.data == "object")
+				setFolderContents(folderResponse.data);
+		})();
+	}, [currentPath]);
+
+	const folderContentsElement = folderContents.map((file) => {
+		if (!file.isDirectory) {
+			return (
+				<div>
+					<p>
+						{file.fileName} - {file.fileSize}
+					</p>
+				</div>
+			);
+		} else {
+			return (
+				<div>
+					<button
+						onClick={() =>
+							setCurrentPath(`${currentPath}${file.fileName}/`)
+						}
+					>
+						{file.fileName}
+					</button>
+					<br />
+					<br />
+				</div>
+			);
+		}
+	});
 
 	return (
 		<div className={styles["page"]}>
@@ -124,8 +179,12 @@ const Home: NextPage<PageProps> = (props) => {
 			</Head>
 
 			<main>
-				<h1>watermelon</h1>
-				<h1>hello {props.user.username}</h1>
+				<h1>Home page</h1>
+				<p>Path: {currentPath}</p>
+
+				<br />
+
+				{folderContentsElement}
 			</main>
 		</div>
 	);

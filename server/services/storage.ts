@@ -24,7 +24,6 @@ const getFile = (userID: string, folderPath: string, fileName: string): string |
 
 const getFolderContents = (userID: string, folderPath: string): Array<{ isDirectory: boolean, fileName: string, fileSize: number }> | "no-folder" => {
     const folderFound = path.join(__dirname, `../../storage/${userID}/files`, folderPath); // Get the route
-    console.log(folderFound)
     if (!folderFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "no-folder"
 
     // Get the information about that folder path
