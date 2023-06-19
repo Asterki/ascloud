@@ -168,6 +168,10 @@ const Home: NextPage<PageProps> = (props) => {
 		}
 	});
 
+	const goBackOneLevel = () => {
+		setCurrentPath(currentPath.replace(/\/[^\/]+\/$/, "/"));
+	};
+
 	return (
 		<div className={styles["page"]}>
 			{/* <Modal modalOpen={welcomeModalOpen} modalTitle="Welcome">
@@ -180,6 +184,9 @@ const Home: NextPage<PageProps> = (props) => {
 
 			<main>
 				<h1>Home page</h1>
+
+				<button onClick={goBackOneLevel}>go back</button>
+
 				<p>Path: {currentPath}</p>
 
 				<br />
