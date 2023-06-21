@@ -92,6 +92,17 @@ const Home: NextPage<PageProps> = (props) => {
 		},
 	};
 
+	const getReadableFileSizeString = (fileSizeInBytes: number) => {
+		var i = -1;
+		var byteUnits = [" kB", " MB", " GB", " TB", "PB", "EB", "ZB", "YB"];
+		do {
+			fileSizeInBytes /= 1024;
+			i++;
+		} while (fileSizeInBytes > 1024);
+
+		return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
+	};
+
 	React.useEffect(() => {
 		(async () => {
 			if (!keys.storageIV || !keys.storageKey) {
@@ -142,31 +153,39 @@ const Home: NextPage<PageProps> = (props) => {
 		})();
 	}, [currentPath]);
 
-	const folderContentsElement = folderContents.map((file) => {
-		if (!file.isDirectory) {
-			return (
-				<div>
-					<p>
-						{file.fileName} - {file.fileSize}
-					</p>
-				</div>
-			);
-		} else {
-			return (
-				<div>
-					<button
+	const folderContentsElement = folderContents
+		.sort((item) => {
+			return item.isDirectory ? -1 : 1; // Folders are shown first
+		})
+		.map((file) => {
+			if (!file.isDirectory) {
+				return (
+					<div className={styles["file"]}>
+						<img src="/svg/file.svg" alt="" />
+						<p>
+							{file.fileName} -{" "}
+							{getReadableFileSizeString(file.fileSize)}
+						</p>
+						<br />
+						<br />
+					</div>
+				);
+			} else {
+				return (
+					<div
 						onClick={() =>
 							setCurrentPath(`${currentPath}${file.fileName}/`)
 						}
+						className={styles["folder"]}
 					>
-						{file.fileName}
-					</button>
-					<br />
-					<br />
-				</div>
-			);
-		}
-	});
+						<img src="/svg/folder.svg" alt="" />
+						<p>{file.fileName}</p>
+						<br />
+						<br />
+					</div>
+				);
+			}
+		});
 
 	const goBackOneLevel = () => {
 		setCurrentPath(currentPath.replace(/\/[^\/]+\/$/, "/"));
@@ -191,7 +210,18 @@ const Home: NextPage<PageProps> = (props) => {
 
 				<br />
 
-				{folderContentsElement}
+				<div className={styles["current-folder"]}>
+                    <div className={styles["folder-navbar"]}>
+                        <img src="/svg/delete-bin.svg" alt="" />
+                        <img src="/svg/folder-plus.svg" alt="" />
+                        <img src="/svg/link.svg" alt="" />
+                        <img src="/svg/upload.svg" alt="" />
+                    </div>
+
+					<div className={styles["folder-view"]}>
+						{folderContentsElement}
+					</div>
+				</div>
 			</main>
 		</div>
 	);

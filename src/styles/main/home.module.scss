@@ -1,4 +1,53 @@
 .page {
 	main {
+		.current-folder {
+			border: 2px solid #5558773a;
+			margin: 20px;
+            border-radius: 10px;
+            padding: 10px;
+
+			.folder-navbar {
+				background-color: #3c3f58;
+
+				display: flex;
+				align-items: center;
+
+				padding: 20px;
+
+				img {
+					margin: 0 10px 0 0;
+                    padding: 10px;
+					background-color: #3c3f58;
+                    border-radius: 50%;
+
+					transition: all 0.1s ease-in-out;
+					&:hover {
+						filter: brightness(1.2);
+                        cursor: pointer;
+					}
+				}
+			}
+
+			.folder-view {
+				.file,
+				.folder {
+                    background-color: #2e3047;
+					display: flex;
+					align-items: center;
+
+					padding: 5px;
+					user-select: none;
+
+					transition: all 0.1s ease-in-out;
+					&:hover {
+						filter: brightness(1.1);
+					}
+
+					p {
+						margin: 0 0 0 5px;
+					}
+				}
+			}
+		}
 	}
 }
