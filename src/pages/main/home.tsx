@@ -54,6 +54,8 @@ const Home: NextPage<PageProps> = (props) => {
 		Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
 	>([]);
 	const [currentPath, setCurrentPath] = React.useState("/");
+	const [isLoadingContents, setIsLoadingContents] =
+		React.useState<boolean>(true);
 
 	const cryptoMethods = {
 		encrypt: (text: string, key: string, iv: string) => {
@@ -130,8 +132,10 @@ const Home: NextPage<PageProps> = (props) => {
 							} as GetFolderContentsRequestBody,
 						});
 
-					if (typeof rootFolderResponse.data == "object")
+					if (typeof rootFolderResponse.data == "object") {
 						setFolderContents(rootFolderResponse.data);
+						setIsLoadingContents(false);
+					}
 				}
 			}
 		})();
@@ -148,8 +152,10 @@ const Home: NextPage<PageProps> = (props) => {
 					} as GetFolderContentsRequestBody,
 				});
 
-			if (typeof folderResponse.data == "object")
+			if (typeof folderResponse.data == "object") {
 				setFolderContents(folderResponse.data);
+				setIsLoadingContents(false);
+			}
 		})();
 	}, [currentPath]);
 
@@ -173,10 +179,13 @@ const Home: NextPage<PageProps> = (props) => {
 			} else {
 				return (
 					<div
-						onClick={() =>
-							setCurrentPath(`${currentPath}${file.fileName}/`)
-						}
-						className={styles["folder"]}
+						onClick={() => {
+                            if (isLoadingContents) return;
+
+							setIsLoadingContents(true);
+							setCurrentPath(`${currentPath}${file.fileName}/`);
+						}}
+						className={`${styles["folder"]} ${isLoadingContents ? styles["folder-inactive"] : ""}`}
 					>
 						<img src="/svg/folder.svg" alt="" />
 						<p>{file.fileName}</p>
@@ -188,6 +197,7 @@ const Home: NextPage<PageProps> = (props) => {
 		});
 
 	const goBackOneLevel = () => {
+		setIsLoadingContents(true);
 		setCurrentPath(currentPath.replace(/\/[^\/]+\/$/, "/"));
 	};
 
@@ -204,19 +214,23 @@ const Home: NextPage<PageProps> = (props) => {
 			<main>
 				<h1>Home page</h1>
 
-				<button onClick={goBackOneLevel}>go back</button>
-
-				<p>Path: {currentPath}</p>
-
 				<br />
 
 				<div className={styles["current-folder"]}>
-                    <div className={styles["folder-navbar"]}>
-                        <img src="/svg/delete-bin.svg" alt="" />
-                        <img src="/svg/folder-plus.svg" alt="" />
-                        <img src="/svg/link.svg" alt="" />
-                        <img src="/svg/upload.svg" alt="" />
-                    </div>
+					<div className={styles["folder-navbar"]}>
+						<img src="/svg/delete-bin.svg" alt="" />
+						<img src="/svg/folder-plus.svg" alt="" />
+						<img src="/svg/link.svg" alt="" />
+						<img src="/svg/upload.svg" alt="" />
+					</div>
+
+					<div className={styles["path-navbar"]}>
+						<button onClick={goBackOneLevel}>Back</button>
+						<p>Path: {currentPath}</p>
+						{isLoadingContents && (
+							<img src="/svg/settings-cog.svg" alt="" />
+						)}
+					</div>
 
 					<div className={styles["folder-view"]}>
 						{folderContentsElement}

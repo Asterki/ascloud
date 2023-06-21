@@ -3,8 +3,8 @@
 		.current-folder {
 			border: 2px solid #5558773a;
 			margin: 20px;
-            border-radius: 10px;
-            padding: 10px;
+			border-radius: 10px;
+			padding: 10px;
 
 			.folder-navbar {
 				background-color: #3c3f58;
@@ -12,26 +12,41 @@
 				display: flex;
 				align-items: center;
 
-				padding: 20px;
+				padding: 10px;
 
 				img {
 					margin: 0 10px 0 0;
-                    padding: 10px;
+					padding: 10px;
 					background-color: #3c3f58;
-                    border-radius: 50%;
+					border-radius: 50%;
 
 					transition: all 0.1s ease-in-out;
 					&:hover {
 						filter: brightness(1.2);
-                        cursor: pointer;
+						cursor: pointer;
 					}
+				}
+			}
+
+			.path-navbar {
+				display: flex;
+				align-items: center;
+				margin: 10px 0 10px 0;
+				// justify-content: center;
+
+				button {
+					width: auto;
+				}
+
+				p {
+					margin: 0 0 0 10px;
 				}
 			}
 
 			.folder-view {
 				.file,
 				.folder {
-                    background-color: #2e3047;
+					background-color: #2e3047;
 					display: flex;
 					align-items: center;
 
@@ -41,11 +56,17 @@
 					transition: all 0.1s ease-in-out;
 					&:hover {
 						filter: brightness(1.1);
+						cursor: pointer;
 					}
 
 					p {
 						margin: 0 0 0 5px;
 					}
+				}
+
+				.file-inactive,
+				.folder-inactive {
+					filter: brightness(0.7) !important;
 				}
 			}
 		}

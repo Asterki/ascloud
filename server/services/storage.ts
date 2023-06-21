@@ -63,7 +63,22 @@ const createFolder = (userID: string, folderPath: string): "done" | "folder-exis
     return "done"
 }
 
-const upload = (userID: string, filePath: string): "done" | "file-exists" | "invalid-name" | "too-big" => {
+const upload = async (userID: string, filePath: string, fileName: string, b64File: string): Promise<"done" | "file-exists" | "invalid-name" | "too-big" | "invalid-path"> => {
+    const fileFound = addTrailingSlash(path.join(__dirname, `../../../storage/${userID}/files/${filePath}`, fileName))
+    if (!fileFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "invalid-path"
+
+    // Check if the file name is already in use
+    const stats = fs.statSync(fileFound);
+    if (stats.isFile()) return "file-exists"
+
+    // Check if a valid name was provided
+    if (!/^[a-zA-Z0-9_\-\.]+$/g.test(fileName)) return "invalid-name" // TODO: Move to the API validation
+
+    // TODO: add a use for the "too-big" message
+
+    // Create a read stream and upload the file
+    await fs.writeFile(fileFound, b64File, 'base64');
+
     return "done"
 }
 
