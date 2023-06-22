@@ -5,7 +5,8 @@ import crypto from "crypto";
 
 import Head from "next/head";
 import Link from "next/link";
-import Modal from "../../components/modal";
+import Modal from "@/components/modal";
+import Navbar from "@/components/navbar";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 
@@ -50,6 +51,7 @@ const Home: NextPage<PageProps> = (props) => {
 	const keys = appState.keys;
 
 	const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(props.login);
+
 	const [folderContents, setFolderContents] = React.useState<
 		Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
 	>([]);
@@ -166,7 +168,11 @@ const Home: NextPage<PageProps> = (props) => {
 		.map((file) => {
 			if (!file.isDirectory) {
 				return (
-					<div className={styles["file"]}>
+					<div
+						className={`${styles["file"]} ${
+							isLoadingContents ? styles["file-inactive"] : ""
+						}`}
+					>
 						<img src="/svg/file.svg" alt="" />
 						<p>
 							{file.fileName} -{" "}
@@ -180,12 +186,14 @@ const Home: NextPage<PageProps> = (props) => {
 				return (
 					<div
 						onClick={() => {
-                            if (isLoadingContents) return;
+							if (isLoadingContents) return;
 
 							setIsLoadingContents(true);
 							setCurrentPath(`${currentPath}${file.fileName}/`);
 						}}
-						className={`${styles["folder"]} ${isLoadingContents ? styles["folder-inactive"] : ""}`}
+						className={`${styles["folder"]} ${
+							isLoadingContents ? styles["folder-inactive"] : ""
+						}`}
 					>
 						<img src="/svg/folder.svg" alt="" />
 						<p>{file.fileName}</p>
@@ -212,9 +220,7 @@ const Home: NextPage<PageProps> = (props) => {
 			</Head>
 
 			<main>
-				<h1>Home page</h1>
-
-				<br />
+				<Navbar user={props.user} />
 
 				<div className={styles["current-folder"]}>
 					<div className={styles["folder-navbar"]}>
@@ -225,7 +231,6 @@ const Home: NextPage<PageProps> = (props) => {
 					</div>
 
 					<div className={styles["path-navbar"]}>
-						<button onClick={goBackOneLevel}>Back</button>
 						<p>Path: {currentPath}</p>
 						{isLoadingContents && (
 							<img src="/svg/settings-cog.svg" alt="" />
@@ -233,6 +238,26 @@ const Home: NextPage<PageProps> = (props) => {
 					</div>
 
 					<div className={styles["folder-view"]}>
+						{currentPath !== "/" && (
+							<div
+								onClick={() => {
+									if (isLoadingContents) return;
+
+									setIsLoadingContents(true);
+									goBackOneLevel();
+								}}
+								className={`${styles["folder"]} ${
+									isLoadingContents
+										? styles["folder-inactive"]
+										: ""
+								}`}
+							>
+								<img src="/svg/folder.svg" alt="" />
+								<p>..</p>
+								<br />
+								<br />
+							</div>
+						)}
 						{folderContentsElement}
 					</div>
 				</div>
