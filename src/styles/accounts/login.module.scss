@@ -1,13 +1,14 @@
 .page {
 	input {
 		width: calc(100% - 24px);
-		border-radius: 10px;
 		padding: 10px;
-		outline: none;
-		border: 2px solid #5558773a;
 
 		background-color: #3c3f58;
 		color: white;
+
+		outline: none;
+		border-radius: 10px;
+		border: 2px solid #5558773a;
 
 		transition: all 0.2s ease-in-out;
 		&:focus {
@@ -30,30 +31,29 @@
 			padding: 20px;
 			border-radius: 10px;
 			border: 2px solid #5558773a;
-
 			filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.13));
 
 			text-align: center;
 
 			p {
 				color: rgba(255, 255, 255, 0.486);
-				margin: 0;
 			}
 
-			h1 {
+			h1,
+			p {
 				margin: 0;
 			}
 
 			.register-button {
+                width: 100%;
+                
 				padding: 10px;
 				border-radius: 10px;
-				width: 100%;
+				border: none;
+				outline: none;
 
 				background-color: #3bba9c;
 				color: white;
-
-				border: none;
-				outline: none;
 			}
 
 			.activate-tfa-input {

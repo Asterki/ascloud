@@ -5,9 +5,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 
-import styles from "../../styles/main/index.module.scss";
+import styles from "@/styles/main/index.module.scss";
 import { GetServerSideProps, NextPage } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {

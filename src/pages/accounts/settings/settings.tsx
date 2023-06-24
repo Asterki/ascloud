@@ -1,7 +1,9 @@
+// Lib Imports
 import React from "react";
 
-import styles from "../../styles/main/settings.module.scss";
-import { User } from "../../../shared/types/models";
+// Styles And Types Imports
+import styles from "@/styles/accounts/settings/index.module.scss";
+import { User } from "@/../shared/types/models";
 import { GetServerSideProps, NextPage } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
@@ -27,11 +29,11 @@ interface PageProps {
 }
 
 const Settings: NextPage<PageProps> = (props) => {
-    return (
-        <div>
-            <h1>jewoqje</h1>
-        </div>
-    );
-}
- 
+	return (
+		<div className={styles["page"]}>
+			<h1>jewoqje</h1>
+		</div>
+	);
+};
+
 export default Settings;

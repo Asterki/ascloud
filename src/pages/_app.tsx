@@ -5,11 +5,11 @@ import Head from "next/head";
 
 import { store } from "@/store";
 import { Provider } from "react-redux";
-import { setLanguage } from "../store/pageSlice";
+import { setLanguage } from "@/store/pageSlice";
 
 import "@/styles/globals.scss";
 import type { AppProps } from "next/app";
-import LangPack from "../../shared/types/lang";
+import LangPack from "@/../shared/types/lang";
 
 const CustomApp = ({ Component, pageProps }: AppProps) => {
 	React.useEffect(() => {
@@ -27,12 +27,12 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
 			store.dispatch(setLanguage(languages[language as "en"]));
 		}
 
-		if ("serviceWorker" in navigator) {
-			navigator.serviceWorker
-				.register("/serviceWorker.js")
-				.then((reg) => console.log("Registered service worker"))
-				.catch((err) => console.log("Failure: ", err));
-		}
+		// if ("serviceWorker" in navigator) {
+		// 	navigator.serviceWorker
+		// 		.register("/serviceWorker.js")
+		// 		.then((reg) => console.log("Registered service worker"))
+		// 		.catch((err) => console.log("Failure: ", err));
+		// }
 	}, []);
 
 	return (

@@ -1,30 +1,33 @@
+// * Imports
+// Lib Imports
 import React from "react";
 import { get, set } from "idb-keyval";
 import axios, { AxiosResponse } from "axios";
 import crypto from "crypto";
 
+// Component Imports
 import Head from "next/head";
 import Navbar from "@/components/navbar";
-import { motion } from "framer-motion";
-import { useRouter } from "next/router";
 
+// State Imports
 import { store, RootState } from "@/store";
 import { useSelector } from "react-redux";
 import { setKeys } from "@/store/keysSlice";
 
-import styles from "../../styles/main/home/index.module.scss";
-import { User } from "../../../shared/types/models";
+// Styles And Types Imports
+import styles from "@/styles/main/home/index.module.scss";
 import { GetServerSideProps, NextPage } from "next";
+import { User } from "@/../shared/types/models";
 import {
 	GetFolderContentsRequestBody,
 	GetFolderContentsResponse,
-} from "../../../shared/types/api/storage";
+} from "@/../shared/types/api/storage";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	if (!context.req.isAuthenticated())
 		return {
 			redirect: {
-				destination: "/login",
+				destination: "/login", // Check if the user is logged in
 				permanent: false,
 			},
 		};
@@ -43,20 +46,26 @@ interface PageProps {
 }
 
 const Home: NextPage<PageProps> = (props) => {
-	const router = useRouter();
 	const appState = useSelector((state: RootState) => state);
 	const lang = appState.page.lang.accounts.register;
 	const keys = appState.keys;
 
+	// * Page State
+	// #region
+	// Wether the just logged in modal will show up
 	const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(props.login);
 
+	// Folders retrieved from the
 	const [folderContents, setFolderContents] = React.useState<
 		Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
 	>([]);
 	const [currentPath, setCurrentPath] = React.useState("/");
 	const [isLoadingContents, setIsLoadingContents] =
 		React.useState<boolean>(true);
+	// #endregion
 
+	// * Functions
+	// #region
 	const cryptoMethods = {
 		encrypt: (text: string, key: string, iv: string) => {
 			const cipher = crypto.createCipheriv("aes-256-ctr", key, iv); // Create the cipher to encrypt the text
@@ -105,6 +114,14 @@ const Home: NextPage<PageProps> = (props) => {
 		return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
 	};
 
+	const goBackOneLevel = () => {
+		setIsLoadingContents(true);
+		setCurrentPath(currentPath.replace(/\/[^\/]+\/$/, "/"));
+	};
+	// #endregion
+
+	// * Page listeners
+	// #region
 	React.useEffect(() => {
 		(async () => {
 			if (!keys.storageIV || !keys.storageKey) {
@@ -142,6 +159,8 @@ const Home: NextPage<PageProps> = (props) => {
 	}, []);
 
 	React.useEffect(() => {
+		// Every time the user interacts with the folders, or changes paths
+		// It will retrieve the folders on that path
 		(async () => {
 			const folderResponse: AxiosResponse<GetFolderContentsResponse> =
 				await axios({
@@ -155,10 +174,15 @@ const Home: NextPage<PageProps> = (props) => {
 			if (typeof folderResponse.data == "object") {
 				setFolderContents(folderResponse.data);
 				setIsLoadingContents(false);
+			} else {
+				// TODO: error handling here
 			}
 		})();
 	}, [currentPath]);
+	// #endregion
 
+	// * Mapped Elements
+	// #region
 	const folderContentsElement = folderContents
 		.sort((item) => {
 			return item.isDirectory ? -1 : 1; // Folders are shown first
@@ -203,26 +227,27 @@ const Home: NextPage<PageProps> = (props) => {
 				);
 			}
 		});
+	// #endregion
 
-	const goBackOneLevel = () => {
-		setIsLoadingContents(true);
-		setCurrentPath(currentPath.replace(/\/[^\/]+\/$/, "/"));
-	};
-
+	// * Page
 	return (
 		<div className={styles["page"]}>
 			{/* <Modal modalOpen={welcomeModalOpen} modalTitle="Welcome">
 				<h1>Hey there</h1>
 			</Modal> */}
 
+			{/* Custom head tags for the page */}
 			<Head>
 				<title>AsCloud - Home</title>
 			</Head>
 
 			<main>
+				{/* Left and top navbar */}
 				<Navbar user={props.user} currentPage={"shared"} />
 
+                {/* Folder contents view and actions*/}
 				<div className={styles["current-folder"]}>
+                    {/* Folder actions */}
 					<div className={styles["folder-navbar"]}>
 						<img src="/svg/delete-bin.svg" alt="" />
 						<img src="/svg/folder-plus.svg" alt="" />
@@ -230,6 +255,7 @@ const Home: NextPage<PageProps> = (props) => {
 						<img src="/svg/upload.svg" alt="" />
 					</div>
 
+                    {/* Folder path */}
 					<div className={styles["path-navbar"]}>
 						<p>Path: {currentPath}</p>
 						{isLoadingContents && (
@@ -237,6 +263,7 @@ const Home: NextPage<PageProps> = (props) => {
 						)}
 					</div>
 
+					{/* Folder contents view */}
 					<div className={styles["folder-view"]}>
 						{currentPath !== "/" && (
 							<div

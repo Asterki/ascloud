@@ -1,14 +1,13 @@
 .component {
 	.navbar {
 		.top-navbar {
-			background-color: #43455c;
-			padding: 10px 20px 10px 20px;
-
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 
+			background-color: #43455c;
 			user-select: none;
+			padding: 10px 20px 10px 20px;
 
 			.branding {
 				p,
@@ -22,13 +21,14 @@
 			}
 
 			.navbar-menu-trigger {
+				width: 300px;
+
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
 
 				padding: 10px;
 				background-color: #43455c;
-				width: 300px;
 
 				border: 2px solid #515470;
 				border-radius: 10px;
@@ -45,17 +45,18 @@
 				right: 20px;
 				top: 65px;
 
-				border: 2px solid #515470;
-				border-radius: 10px;
-				padding: 10px;
-
 				width: 300px;
 
 				background-color: #494b64;
+				padding: 10px;
+
+				border: 2px solid #515470;
+				border-radius: 10px;
 
 				button {
-					background-color: #494b64;
 					margin: 0 0 5px 0;
+
+					background-color: #494b64;
 				}
 
 				.left-navbar-mobile {
@@ -65,38 +66,40 @@
 		}
 
 		.left-navbar {
-			background-color: #43455c;
+			position: absolute;
 
-			margin-top: 0;
-			border-top: 2px solid #5558773a;
 			width: 300px;
 			height: calc(100vh - 75px);
-
-			position: absolute;
 
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			flex-direction: column;
 
+			background-color: #43455c;
+
+			border-top: 2px solid #5558773a;
+			margin-top: 0;
+
 			div {
 				width: 100%;
+
 				display: flex;
 				align-items: center;
 				flex-direction: column;
 
 				button {
-					background-color: #43455c;
 					width: 90%;
-
-					padding: 10px;
-					margin: 20px 0 10px 0;
-
-					text-align: left;
-					font-size: 20px;
 
 					display: flex;
 					align-items: center;
+
+					background-color: #43455c;
+					font-size: 20px;
+					text-align: left;
+
+					padding: 10px;
+					margin: 20px 0 10px 0;
 
 					img {
 						margin-right: 5px;

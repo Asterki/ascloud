@@ -1,26 +1,34 @@
+// * Imports
+// Lib Imports
 import React from "react";
 import axios, { AxiosResponse } from "axios";
-
 import { z } from "zod";
 
+// Component Imports
 import Head from "next/head";
 import Link from "next/link";
-import Modal from "../../components/modal";
 import { motion } from "framer-motion";
+import Modal from "@/components/modal";
+
+// State Imports
 import { useRouter } from "next/router";
-
 import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 
-import styles from "../../styles/accounts/login.module.scss";
+// Styles And Types Imports
+import styles from "@/styles/accounts/login.module.scss";
 import { GetServerSideProps, NextPage } from "next";
-import { LoginRequestBody, LoginResponse } from "../../../shared/types/api/accounts";
+import {
+	LoginRequestBody,
+	LoginResponse,
+} from "@/../shared/types/api/accounts";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
+	// Check if the user is logged in
 	if (context.req.isAuthenticated())
 		return {
 			redirect: {
-				destination: "/home",
+				destination: "/home", // If so, return to the home page
 				permanent: false,
 			},
 		};
@@ -35,19 +43,26 @@ const Login: NextPage = () => {
 	const lang = appState.page.lang.accounts.login;
 	const router = useRouter();
 
+	// * Page State
+	// #region
 	const [errorModalState, setErrorModalState] = React.useState({
 		open: false,
 		title: "",
 		message: "",
 	});
-
 	const [TFAModalOpen, setTFAModalOpen] = React.useState(false);
+	// #endregion
 
+	// * Refs
+	// #region
 	const usernameOrEmailInput = React.useRef<HTMLInputElement>(null);
 	const passwordInput = React.useRef<HTMLInputElement>(null);
 	const TFAInput = React.useRef<HTMLInputElement>(null);
+	// #endregion
 
+	// * Page functions
 	const login = async () => {
+		// Handle login
 		const usernameOrEmail = usernameOrEmailInput.current!.value;
 		const password = passwordInput.current!.value;
 		const TFACode = TFAInput.current!.value;
@@ -60,13 +75,21 @@ const Login: NextPage = () => {
 					tfaCode: z.string().optional(),
 				})
 				.required()
-				.safeParse({ usernameOrEmail: usernameOrEmail, password: password, tfaCode: TFACode });
+				.safeParse({
+					usernameOrEmail: usernameOrEmail,
+					password: password,
+					tfaCode: TFACode,
+				});
 
 			if (!parsedBody.success && "error" in parsedBody)
 				return setErrorModalState({
 					open: true,
 					title: "Error",
-					message: lang.errorModal.errors[parsedBody.error.errors[0].message as keyof typeof lang.errorModal.errors],
+					message:
+						lang.errorModal.errors[
+							parsedBody.error.errors[0]
+								.message as keyof typeof lang.errorModal.errors
+						],
 				});
 
 			// Send the request
@@ -89,17 +112,30 @@ const Login: NextPage = () => {
 					router.push("/");
 
 				default:
-					setErrorModalState({ open: true, title: "Error", message: lang.errorModal.errors[response.data] });
+					setErrorModalState({
+						open: true,
+						title: "Error",
+						message: lang.errorModal.errors[response.data],
+					});
 			}
 		} catch (error: unknown) {
 			console.log(error);
-			return setErrorModalState({ open: true, title: "Error", message: lang.errorModal.errors["server-error"] });
+			return setErrorModalState({
+				open: true,
+				title: "Error",
+				message: lang.errorModal.errors["server-error"],
+			});
 		}
 	};
 
+	// * Page
 	return (
 		<div className={styles["page"]}>
-			<Modal modalOpen={errorModalState.open} modalTitle={errorModalState.title}>
+			{/* Modals out of the main content of the page */}
+			<Modal
+				modalOpen={errorModalState.open}
+				modalTitle={errorModalState.title}
+			>
 				<p>{errorModalState.message}</p>
 
 				<button
@@ -110,9 +146,12 @@ const Login: NextPage = () => {
 					{lang.errorModal.close}
 				</button>
 			</Modal>
-
 			<Modal modalOpen={TFAModalOpen} modalTitle={lang.tfaModal.title}>
-				<input type="text" placeholder={lang.tfaModal.placeholder} ref={TFAInput} />
+				<input
+					type="text"
+					placeholder={lang.tfaModal.placeholder}
+					ref={TFAInput}
+				/>
 
 				<button
 					onClick={() => {
@@ -123,11 +162,13 @@ const Login: NextPage = () => {
 				</button>
 			</Modal>
 
+			{/* Custom head tags for the page */}
 			<Head>
 				<title>{lang.pageTitle}</title>
 			</Head>
 
 			<main>
+				{/* Login form */}
 				<motion.div
 					variants={{
 						visible: {
@@ -153,26 +194,44 @@ const Login: NextPage = () => {
 					<p>{lang.form.caption}</p>
 					<br />
 					<br />
-					<input type="text" placeholder={lang.form.emailUsernamePlaceholder} ref={usernameOrEmailInput} />
+					<input
+						type="text"
+						placeholder={lang.form.emailUsernamePlaceholder}
+						ref={usernameOrEmailInput}
+					/>
 					<br />
 					<br />
-					<input type="password" placeholder={lang.form.passwordPlaceholder} ref={passwordInput} />
+					<input
+						type="password"
+						placeholder={lang.form.passwordPlaceholder}
+						ref={passwordInput}
+					/>
 					<br />
 					<br />
-					<button className={styles["register-button"]} onClick={login}>
+					<button
+						className={styles["register-button"]}
+						onClick={login}
+					>
 						{lang.form.login}
 					</button>
 					<br />
 					<br />
 					<p>
-						{lang.form.noAccount.split("&")[0]} <Link href="/register">{lang.form.noAccount.split("&")[1]}</Link>
+						{lang.form.noAccount.split("&")[0]}{" "}
+						<Link href="/register">
+							{lang.form.noAccount.split("&")[1]}
+						</Link>
 					</p>
 				</motion.div>
 			</main>
 
+			{/* Footer */}
 			<div className={styles["footer"]}>
 				<p>
-					{lang.footer} <Link href="https://github.com/Asterki/ascloud">GitHub</Link>
+					{lang.footer}{" "}
+					<Link href="https://github.com/Asterki/ascloud">
+						GitHub
+					</Link>
 				</p>
 			</div>
 		</div>

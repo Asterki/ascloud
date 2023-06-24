@@ -10,33 +10,35 @@
 		.register-form {
 			width: 20%;
 
+			text-align: center;
+
 			background-color: #3c3f58;
+			filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.13));
 			padding: 20px;
+
 			border-radius: 10px;
 			border: 2px solid #5558773a;
 
-			filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.13));
-
-			text-align: center;
-
 			p {
 				color: rgba(255, 255, 255, 0.486);
-				margin: 0;
 			}
 
-			h1 {
+			h1,
+			p {
 				margin: 0;
 			}
 
 			input {
 				width: calc(100% - 24px);
-				border-radius: 10px;
-				padding: 10px;
+
+				color: white;
+				
+                padding: 10px;
+				background-color: #3c3f58;
+				
+                border-radius: 10px;
 				outline: none;
 				border: 2px solid #5558773a;
-
-				background-color: #3c3f58;
-				color: white;
 
 				transition: all 0.2s ease-in-out;
 				&:focus {
@@ -45,34 +47,33 @@
 			}
 
 			.register-button {
-				padding: 10px;
-				border-radius: 10px;
 				width: 100%;
 
-				background-color: #3bba9c;
+				padding: 10px;
 				color: white;
-
+				background-color: #3bba9c;
+				
+                border-radius: 10px;
 				border: none;
 				outline: none;
 			}
 
-            .activate-tfa-input {
-                text-align: left;
+			.activate-tfa-input {
+				text-align: left;
 
-                input {
-                    width: auto;
-                }
-            }
+				input {
+					width: auto;
+				}
+			}
 		}
 	}
 
-    .footer {
-        position: absolute;
-        bottom: 5px;
-        left: 5px;
-    }
+	.footer {
+		position: absolute;
+		bottom: 5px;
+		left: 5px;
+	}
 }
-
 
 @media screen and (max-width: 720px) {
 	.page {
