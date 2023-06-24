@@ -98,3 +98,23 @@
 		}
 	}
 }
+
+@media screen and (max-width: 720px) {
+	.navbar {
+        .top-navbar {
+            .branding {
+                p {
+                    display: none;
+                }
+            }
+        }
+
+        .left-navbar {
+            display: none !important;
+        }
+
+        .navbar-menu-trigger, .navbar-menu {
+            max-width: 50%;
+        }
+    }
+}
