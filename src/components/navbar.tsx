@@ -1,15 +1,20 @@
 import React from "react";
-import { NextPage } from "next";
+
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 import styles from "../styles/components/navbar.module.scss";
 import { User } from "../../shared/types/models";
+import { NextPage } from "next";
 
 interface ComponentProps {
 	user: User;
+	currentPage: "personal" | "shared" | "trash";
 }
 
 const Navbar: NextPage<ComponentProps> = (props) => {
+	const router = useRouter();
+
 	const [navbarMenuOpen, setNavbarMenuOpen] = React.useState<boolean>(false);
 
 	return (
@@ -21,12 +26,37 @@ const Navbar: NextPage<ComponentProps> = (props) => {
 						<p>Open Source Cloud/Local Storage Service</p>
 					</div>
 
-					<div
+					<motion.div
+						variants={{
+							open: {
+								filter: "brightness(1.2)",
+							},
+							closed: {
+								filter: "brightness(1)",
+							},
+						}}
+						animate={navbarMenuOpen ? "open" : "closed"}
+						initial={"closed"}
 						className={styles["navbar-menu-trigger"]}
 						onClick={() => setNavbarMenuOpen(!navbarMenuOpen)}
 					>
 						<p>{props.user.username}</p>
-					</div>
+
+						<motion.img
+							variants={{
+								open: {
+									rotate: "180deg",
+								},
+								closed: {
+									rotate: "0deg",
+								},
+							}}
+							animate={navbarMenuOpen ? "open" : "closed"}
+							initial={"closed"}
+							src="/svg/upload.svg"
+							alt=""
+						/>
+					</motion.div>
 
 					<motion.div
 						variants={{
@@ -48,26 +78,87 @@ const Navbar: NextPage<ComponentProps> = (props) => {
 						initial={"closed"}
 						className={styles["navbar-menu"]}
 					>
-						<button>ejqwoiej</button>
-						<button>ejqwoiej</button>
-						<button>ejqwoiej</button>
-						<button>ejqwoiej</button>
+						<div className={styles["left-navbar-mobile"]}>
+							<button
+								onClick={() => router.push("/home")}
+								className={
+									props.currentPage == "personal"
+										? styles["active"]
+										: ""
+								}
+							>
+								Personal Folder
+							</button>
+							<button
+								onClick={() => router.push("/home/shared")}
+								className={
+									props.currentPage == "shared"
+										? styles["active"]
+										: ""
+								}
+							>
+								Shared
+							</button>
+							<button
+								onClick={() => router.push("/home/trash")}
+								className={
+									props.currentPage == "trash"
+										? styles["active"]
+										: ""
+								}
+							>
+								Trash
+							</button>
+
+							<hr />
+						</div>
+
+						<button onClick={() => router.push("/accounts/settings")}>
+							Settings
+						</button>
+						<button onClick={() => router.push("/main/about")}>
+							About
+						</button>
+						<button onClick={() => router.push("/home/trash")}>
+							Placeholder
+						</button>
 					</motion.div>
 				</div>
 
 				<div className={styles["left-navbar"]}>
 					<div>
-						<button>
+						<button
+							onClick={() => router.push("/home")}
+							className={
+								props.currentPage == "personal"
+									? styles["active"]
+									: ""
+							}
+						>
 							<img src="/svg/folder.svg" alt="" />
 							Personal folder
 						</button>
-						<button>
+						<button
+							onClick={() => router.push("/home/shared")}
+							className={
+								props.currentPage == "shared"
+									? styles["active"]
+									: ""
+							}
+						>
 							<img src="/svg/link.svg" alt="" />
 							Shared
 						</button>
 					</div>
 					<div>
-						<button>
+						<button
+							onClick={() => router.push("/home/trash")}
+							className={
+								props.currentPage == "trash"
+									? styles["active"]
+									: ""
+							}
+						>
 							<img src="/svg/delete-bin.svg" alt="" />
 							Trash
 						</button>

@@ -4,8 +4,6 @@ import axios, { AxiosResponse } from "axios";
 import crypto from "crypto";
 
 import Head from "next/head";
-import Link from "next/link";
-import Modal from "@/components/modal";
 import Navbar from "@/components/navbar";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
@@ -14,7 +12,7 @@ import { store, RootState } from "@/store";
 import { useSelector } from "react-redux";
 import { setKeys } from "@/store/keysSlice";
 
-import styles from "../../styles/main/home.module.scss";
+import styles from "../../styles/main/home/index.module.scss";
 import { User } from "../../../shared/types/models";
 import { GetServerSideProps, NextPage } from "next";
 import {
@@ -51,7 +49,6 @@ const Home: NextPage<PageProps> = (props) => {
 	const keys = appState.keys;
 
 	const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(props.login);
-	const [isNavbarMenuOpen, setNavbarMenuOpen] = React.useState(false);
 
 	const [folderContents, setFolderContents] = React.useState<
 		Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
@@ -170,6 +167,7 @@ const Home: NextPage<PageProps> = (props) => {
 			if (!file.isDirectory) {
 				return (
 					<div
+						key={file.fileName}
 						className={`${styles["file"]} ${
 							isLoadingContents ? styles["file-inactive"] : ""
 						}`}
@@ -186,6 +184,7 @@ const Home: NextPage<PageProps> = (props) => {
 			} else {
 				return (
 					<div
+						key={file.fileName}
 						onClick={() => {
 							if (isLoadingContents) return;
 
@@ -221,7 +220,7 @@ const Home: NextPage<PageProps> = (props) => {
 			</Head>
 
 			<main>
-				<Navbar user={props.user} />
+				<Navbar user={props.user} currentPage={"shared"} />
 
 				<div className={styles["current-folder"]}>
 					<div className={styles["folder-navbar"]}>

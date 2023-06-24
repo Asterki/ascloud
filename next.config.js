@@ -12,9 +12,19 @@ const nextConfig = {
 				source: "/",
 				destination: "/main",
 			},
-            {
+
+			// Home
+			{
 				source: "/home",
-				destination: "/main/home",
+				destination: "/home",
+			},
+			{
+				source: "/home/shared",
+				destination: "/home/shared",
+			},
+			{
+				source: "/home/trash",
+				destination: "/home/trash",
 			},
 
 			// Accounts
