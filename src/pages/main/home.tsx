@@ -51,6 +51,7 @@ const Home: NextPage<PageProps> = (props) => {
 	const keys = appState.keys;
 
 	const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(props.login);
+	const [isNavbarMenuOpen, setNavbarMenuOpen] = React.useState(false);
 
 	const [folderContents, setFolderContents] = React.useState<
 		Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
@@ -220,7 +221,69 @@ const Home: NextPage<PageProps> = (props) => {
 			</Head>
 
 			<main>
-				<Navbar user={props.user} />
+				<div className={styles["navbar"]}>
+					<div className={styles["top-navbar"]}>
+						<div className={styles["branding"]}>
+							<h1>AsCloud</h1>
+							<p>Open Source Cloud/Local Storage Service</p>
+						</div>
+
+						<div
+							className={styles["navbar-menu-trigger"]}
+							onClick={() => setNavbarMenuOpen(!isNavbarMenuOpen)}
+						>
+							<p>{props.user.username}</p>
+						</div>
+
+						<motion.div
+							variants={{
+								open: {
+									opacity: 1,
+									transition: { duration: 0.1 },
+									position: "absolute",
+									display: "block",
+								},
+								closed: {
+									opacity: 0,
+									transition: { duration: 0.1 },
+									transitionEnd: {
+										display: "none",
+									},
+								},
+							}}
+							animate={isNavbarMenuOpen ? "open" : "closed"}
+							initial={"closed"}
+							className={styles["navbar-menu"]}
+						>
+							<button>ejqwoiej</button>
+							<button>ejqwoiej</button>
+							<button>ejqwoiej</button>
+							<button>ejqwoiej</button>
+						</motion.div>
+					</div>
+
+					<div className={styles["left-navbar"]}>
+						<div>
+							<button>
+								<img src="/svg/folder.svg" alt="" />
+								Personal folder
+							</button>
+							<button>
+								<img src="/svg/link.svg" alt="" />
+								Shared
+							</button>
+						</div>
+						<div>
+							<button>
+								<img src="/svg/delete-bin.svg" alt="" />
+								Trash
+							</button>
+							<br />
+							<br />
+							AsCloud, open source at <a href="">GitHub</a>
+						</div>
+					</div>
+				</div>
 
 				<div className={styles["current-folder"]}>
 					<div className={styles["folder-navbar"]}>
