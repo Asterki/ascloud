@@ -18,10 +18,7 @@ import { setKeys } from "@/store/keysSlice";
 import styles from "@/styles/main/home/index.module.scss";
 import { GetServerSideProps, NextPage } from "next";
 import { User } from "@/../shared/types/models";
-import {
-	GetFolderContentsRequestBody,
-	GetFolderContentsResponse,
-} from "@/../shared/types/api/storage";
+import { GetFolderContentsRequestBody, GetFolderContentsResponse } from "@/../shared/types/api/storage";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	if (!context.req.isAuthenticated())
@@ -60,8 +57,7 @@ const Home: NextPage<PageProps> = (props) => {
 		Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
 	>([]);
 	const [currentPath, setCurrentPath] = React.useState("/");
-	const [isLoadingContents, setIsLoadingContents] =
-		React.useState<boolean>(true);
+	const [isLoadingContents, setIsLoadingContents] = React.useState<boolean>(true);
 	// #endregion
 
 	// * Functions
@@ -125,9 +121,7 @@ const Home: NextPage<PageProps> = (props) => {
 	React.useEffect(() => {
 		(async () => {
 			if (!keys.storageIV || !keys.storageKey) {
-				const retrievedKey: string | undefined = await get(
-					"crypto-key"
-				);
+				const retrievedKey: string | undefined = await get("crypto-key");
 				const retrievedIV: string | undefined = await get("crypto-iv");
 
 				// If no key, open modal to ask user for the key
@@ -135,19 +129,16 @@ const Home: NextPage<PageProps> = (props) => {
 					setWelcomeModalOpen(true);
 					cryptoMethods.generateKeys();
 				} else {
-					store.dispatch(
-						setKeys({ iv: retrievedIV, key: retrievedKey })
-					);
+					store.dispatch(setKeys({ iv: retrievedIV, key: retrievedKey }));
 
 					// Get the root folder contents
-					const rootFolderResponse: AxiosResponse<GetFolderContentsResponse> =
-						await axios({
-							method: "POST",
-							url: "/api/storage/get-folder-contents",
-							params: {
-								folderPath: "/",
-							} as GetFolderContentsRequestBody,
-						});
+					const rootFolderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
+						method: "POST",
+						url: "/api/storage/get-folder-contents",
+						params: {
+							folderPath: "/",
+						} as GetFolderContentsRequestBody,
+					});
 
 					if (typeof rootFolderResponse.data == "object") {
 						setFolderContents(rootFolderResponse.data);
@@ -162,14 +153,13 @@ const Home: NextPage<PageProps> = (props) => {
 		// Every time the user interacts with the folders, or changes paths
 		// It will retrieve the folders on that path
 		(async () => {
-			const folderResponse: AxiosResponse<GetFolderContentsResponse> =
-				await axios({
-					method: "POST",
-					url: "/api/storage/get-folder-contents",
-					params: {
-						folderPath: currentPath,
-					} as GetFolderContentsRequestBody,
-				});
+			const folderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
+				method: "POST",
+				url: "/api/storage/get-folder-contents",
+				params: {
+					folderPath: currentPath,
+				} as GetFolderContentsRequestBody,
+			});
 
 			if (typeof folderResponse.data == "object") {
 				setFolderContents(folderResponse.data);
@@ -192,14 +182,11 @@ const Home: NextPage<PageProps> = (props) => {
 				return (
 					<div
 						key={file.fileName}
-						className={`${styles["file"]} ${
-							isLoadingContents ? styles["file-inactive"] : ""
-						}`}
+						className={`${styles["file"]} ${isLoadingContents ? styles["file-inactive"] : ""}`}
 					>
 						<img src="/svg/file.svg" alt="" />
 						<p>
-							{file.fileName} -{" "}
-							{getReadableFileSizeString(file.fileSize)}
+							{file.fileName} - {getReadableFileSizeString(file.fileSize)}
 						</p>
 						<br />
 						<br />
@@ -215,9 +202,7 @@ const Home: NextPage<PageProps> = (props) => {
 							setIsLoadingContents(true);
 							setCurrentPath(`${currentPath}${file.fileName}/`);
 						}}
-						className={`${styles["folder"]} ${
-							isLoadingContents ? styles["folder-inactive"] : ""
-						}`}
+						className={`${styles["folder"]} ${isLoadingContents ? styles["folder-inactive"] : ""}`}
 					>
 						<img src="/svg/folder.svg" alt="" />
 						<p>{file.fileName}</p>
@@ -245,9 +230,9 @@ const Home: NextPage<PageProps> = (props) => {
 				{/* Left and top navbar */}
 				<Navbar user={props.user} currentPage={"shared"} />
 
-                {/* Folder contents view and actions*/}
+				{/* Folder contents view and actions*/}
 				<div className={styles["current-folder"]}>
-                    {/* Folder actions */}
+					{/* Folder actions */}
 					<div className={styles["folder-navbar"]}>
 						<img src="/svg/delete-bin.svg" alt="" />
 						<img src="/svg/folder-plus.svg" alt="" />
@@ -255,12 +240,10 @@ const Home: NextPage<PageProps> = (props) => {
 						<img src="/svg/upload.svg" alt="" />
 					</div>
 
-                    {/* Folder path */}
+					{/* Folder path */}
 					<div className={styles["path-navbar"]}>
 						<p>Path: {currentPath}</p>
-						{isLoadingContents && (
-							<img src="/svg/settings-cog.svg" alt="" />
-						)}
+						{isLoadingContents && <img src="/svg/settings-cog.svg" alt="" />}
 					</div>
 
 					{/* Folder contents view */}
@@ -273,11 +256,7 @@ const Home: NextPage<PageProps> = (props) => {
 									setIsLoadingContents(true);
 									goBackOneLevel();
 								}}
-								className={`${styles["folder"]} ${
-									isLoadingContents
-										? styles["folder-inactive"]
-										: ""
-								}`}
+								className={`${styles["folder"]} ${isLoadingContents ? styles["folder-inactive"] : ""}`}
 							>
 								<img src="/svg/folder.svg" alt="" />
 								<p>..</p>

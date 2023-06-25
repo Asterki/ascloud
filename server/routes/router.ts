@@ -2,16 +2,16 @@ import chalk from "chalk";
 import { app } from "../index";
 
 try {
-    require("./middleware/app")
-    // require("./middleware/helmet")
-    console.log(`- ${chalk.cyan("info ")} - Middleware loaded`);
+	require("./middleware/app");
+	// require("./middleware/helmet")
+	console.log(`- ${chalk.cyan("info ")} - Middleware loaded`);
 
-    app.use("/api/accounts", require("./api/accounts"))
-    app.use("/api/storage", require("./api/storage"))
-    console.log(`- ${chalk.cyan("info ")} - Routes loaded`);
+	app.use("/api/accounts", require("./api/accounts"));
+	app.use("/api/storage", require("./api/storage"));
+	console.log(`- ${chalk.cyan("info ")} - Routes loaded`);
 } catch (err: unknown) {
-    console.log(`- ${chalk.redBright("error ")} - There was an error loading the routes`);
-    console.log(err);
+	console.log(`- ${chalk.redBright("error ")} - There was an error loading the routes`);
+	console.log(err);
 }
 
 export { app };

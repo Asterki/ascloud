@@ -16,7 +16,7 @@ export const keysSlice = createSlice({
 	name: "page",
 	initialState,
 	reducers: {
-		setKeys: (state, value: PayloadAction<{ iv: string, key: string }>) => {
+		setKeys: (state, value: PayloadAction<{ iv: string; key: string }>) => {
 			state.storageKey = value.payload.iv;
 			state.storageKey = value.payload.key;
 		},

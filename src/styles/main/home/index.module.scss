@@ -7,9 +7,9 @@
 			padding: 10px;
 
 			.folder-navbar {
-                display: flex;
+				display: flex;
 				align-items: center;
-                
+
 				background-color: #3c3f58;
 				padding: 10px;
 
@@ -17,11 +17,11 @@
 
 				img {
 					margin: 0 10px 0 0;
-					
-                    padding: 10px;
+
+					padding: 10px;
 					background-color: #3c3f58;
-					
-                    border-radius: 50%;
+
+					border-radius: 50%;
 
 					transition: all 0.1s ease-in-out;
 					&:hover {
@@ -51,9 +51,9 @@
 			.folder-view {
 				.file,
 				.folder {
-                    display: flex;
+					display: flex;
 					align-items: center;
-                    
+
 					background-color: #2e3047;
 					padding: 5px;
 					user-select: none;
@@ -63,7 +63,7 @@
 					transition: all 0.1s ease-in-out;
 					&:hover {
 						filter: brightness(1.1);
-                        
+
 						cursor: pointer;
 					}
 
@@ -84,10 +84,10 @@
 
 @media screen and (max-width: 720px) {
 	.page {
-        main {
-            .current-folder {
-                margin: 20px;
-            }
-        }
-    }
+		main {
+			.current-folder {
+				margin: 20px;
+			}
+		}
+	}
 }

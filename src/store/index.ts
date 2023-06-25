@@ -1,12 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
 // import { combineReducers } from 'redux';
-import thunk from 'redux-thunk';
+import thunk from "redux-thunk";
 
 // import storage from 'redux-persist/lib/storage';
 // import { persistReducer } from 'redux-persist';
 
-import pageReducer from './pageSlice';
-import keysSlice from './keysSlice';
+import pageReducer from "./pageSlice";
+import keysSlice from "./keysSlice";
 
 // const reducers = combineReducers({
 // 	page: pageReducer,
@@ -22,9 +22,9 @@ import keysSlice from './keysSlice';
 export const store = configureStore({
 	reducer: {
 		page: pageReducer,
-        keys: keysSlice
+		keys: keysSlice,
 	},
-	devTools: process.env.NODE_ENV == 'development' ? true : false,
+	devTools: process.env.NODE_ENV == "development" ? true : false,
 	middleware: [thunk],
 });
 

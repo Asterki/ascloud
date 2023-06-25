@@ -1,16 +1,16 @@
 .component {
 	position: absolute;
-	
-    width: 100vw;
+
+	width: 100vw;
 	height: 100vh;
 
-    z-index: 20;
+	z-index: 20;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	
-    background-color: rgba(0, 0, 0, 0.452);
+
+	background-color: rgba(0, 0, 0, 0.452);
 
 	.modal-content {
 		min-width: 300px;
@@ -36,11 +36,10 @@
 		margin-top: 10px;
 		padding: 10px;
 		cursor: pointer;
-		
-        border-radius: 5px;
+
+		border-radius: 5px;
 		border: none;
 		outline: none !important;
-
 
 		transition: all 0.1s ease-in-out;
 		&:hover {
@@ -53,8 +52,8 @@
 
 		color: white;
 		background-color: #222630;
-		
-        border-radius: 5px;
+
+		border-radius: 5px;
 		padding: 10px;
 		border: 1px solid #212530;
 		outline: none !important;

@@ -18,10 +18,7 @@ import { RootState } from "@/store";
 // Styles And Types Imports
 import styles from "@/styles/accounts/login.module.scss";
 import { GetServerSideProps, NextPage } from "next";
-import {
-	LoginRequestBody,
-	LoginResponse,
-} from "@/../shared/types/api/accounts";
+import { LoginRequestBody, LoginResponse } from "@/../shared/types/api/accounts";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	// Check if the user is logged in
@@ -87,8 +84,7 @@ const Login: NextPage = () => {
 					title: "Error",
 					message:
 						lang.errorModal.errors[
-							parsedBody.error.errors[0]
-								.message as keyof typeof lang.errorModal.errors
+							parsedBody.error.errors[0].message as keyof typeof lang.errorModal.errors
 						],
 				});
 
@@ -132,10 +128,7 @@ const Login: NextPage = () => {
 	return (
 		<div className={styles["page"]}>
 			{/* Modals out of the main content of the page */}
-			<Modal
-				modalOpen={errorModalState.open}
-				modalTitle={errorModalState.title}
-			>
+			<Modal modalOpen={errorModalState.open} modalTitle={errorModalState.title}>
 				<p>{errorModalState.message}</p>
 
 				<button
@@ -147,11 +140,7 @@ const Login: NextPage = () => {
 				</button>
 			</Modal>
 			<Modal modalOpen={TFAModalOpen} modalTitle={lang.tfaModal.title}>
-				<input
-					type="text"
-					placeholder={lang.tfaModal.placeholder}
-					ref={TFAInput}
-				/>
+				<input type="text" placeholder={lang.tfaModal.placeholder} ref={TFAInput} />
 
 				<button
 					onClick={() => {
@@ -194,33 +183,20 @@ const Login: NextPage = () => {
 					<p>{lang.form.caption}</p>
 					<br />
 					<br />
-					<input
-						type="text"
-						placeholder={lang.form.emailUsernamePlaceholder}
-						ref={usernameOrEmailInput}
-					/>
+					<input type="text" placeholder={lang.form.emailUsernamePlaceholder} ref={usernameOrEmailInput} />
 					<br />
 					<br />
-					<input
-						type="password"
-						placeholder={lang.form.passwordPlaceholder}
-						ref={passwordInput}
-					/>
+					<input type="password" placeholder={lang.form.passwordPlaceholder} ref={passwordInput} />
 					<br />
 					<br />
-					<button
-						className={styles["register-button"]}
-						onClick={login}
-					>
+					<button className={styles["register-button"]} onClick={login}>
 						{lang.form.login}
 					</button>
 					<br />
 					<br />
 					<p>
 						{lang.form.noAccount.split("&")[0]}{" "}
-						<Link href="/register">
-							{lang.form.noAccount.split("&")[1]}
-						</Link>
+						<Link href="/register">{lang.form.noAccount.split("&")[1]}</Link>
 					</p>
 				</motion.div>
 			</main>
@@ -228,10 +204,7 @@ const Login: NextPage = () => {
 			{/* Footer */}
 			<div className={styles["footer"]}>
 				<p>
-					{lang.footer}{" "}
-					<Link href="https://github.com/Asterki/ascloud">
-						GitHub
-					</Link>
+					{lang.footer} <Link href="https://github.com/Asterki/ascloud">GitHub</Link>
 				</p>
 			</div>
 		</div>

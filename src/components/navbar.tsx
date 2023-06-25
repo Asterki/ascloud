@@ -81,31 +81,19 @@ const Navbar: NextPage<ComponentProps> = (props) => {
 						<div className={styles["left-navbar-mobile"]}>
 							<button
 								onClick={() => router.push("/home")}
-								className={
-									props.currentPage == "personal"
-										? styles["active"]
-										: ""
-								}
+								className={props.currentPage == "personal" ? styles["active"] : ""}
 							>
 								Personal Folder
 							</button>
 							<button
 								onClick={() => router.push("/home/shared")}
-								className={
-									props.currentPage == "shared"
-										? styles["active"]
-										: ""
-								}
+								className={props.currentPage == "shared" ? styles["active"] : ""}
 							>
 								Shared
 							</button>
 							<button
 								onClick={() => router.push("/home/trash")}
-								className={
-									props.currentPage == "trash"
-										? styles["active"]
-										: ""
-								}
+								className={props.currentPage == "trash" ? styles["active"] : ""}
 							>
 								Trash
 							</button>
@@ -113,15 +101,9 @@ const Navbar: NextPage<ComponentProps> = (props) => {
 							<hr />
 						</div>
 
-						<button onClick={() => router.push("/accounts/settings")}>
-							Settings
-						</button>
-						<button onClick={() => router.push("/main/about")}>
-							About
-						</button>
-						<button onClick={() => router.push("/home/trash")}>
-							Placeholder
-						</button>
+						<button onClick={() => router.push("/accounts/settings")}>Settings</button>
+						<button onClick={() => router.push("/main/about")}>About</button>
+						<button onClick={() => router.push("/home/trash")}>Placeholder</button>
 					</motion.div>
 				</div>
 
@@ -129,22 +111,14 @@ const Navbar: NextPage<ComponentProps> = (props) => {
 					<div>
 						<button
 							onClick={() => router.push("/home")}
-							className={
-								props.currentPage == "personal"
-									? styles["active"]
-									: ""
-							}
+							className={props.currentPage == "personal" ? styles["active"] : ""}
 						>
 							<img src="/svg/folder.svg" alt="" />
 							Personal folder
 						</button>
 						<button
 							onClick={() => router.push("/home/shared")}
-							className={
-								props.currentPage == "shared"
-									? styles["active"]
-									: ""
-							}
+							className={props.currentPage == "shared" ? styles["active"] : ""}
 						>
 							<img src="/svg/link.svg" alt="" />
 							Shared
@@ -153,11 +127,7 @@ const Navbar: NextPage<ComponentProps> = (props) => {
 					<div>
 						<button
 							onClick={() => router.push("/home/trash")}
-							className={
-								props.currentPage == "trash"
-									? styles["active"]
-									: ""
-							}
+							className={props.currentPage == "trash" ? styles["active"] : ""}
 						>
 							<img src="/svg/delete-bin.svg" alt="" />
 							Trash

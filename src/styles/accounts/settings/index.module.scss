@@ -58,18 +58,18 @@
 				border: none;
 
 				flex-direction: column;
-                align-items: center;
-                justify-content: space-around;
+				align-items: center;
+				justify-content: space-around;
 
 				.left-content,
 				.right-content {
 					width: 90%;
-                    padding: 0;
-                    border: none;
+					padding: 0;
+					border: none;
 
-                    button {
-                        width: calc(100% - 20px);
-                    }
+					button {
+						width: calc(100% - 20px);
+					}
 				}
 			}
 		}

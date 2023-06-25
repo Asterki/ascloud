@@ -7,7 +7,13 @@
 		align-items: center;
 
 		background: #47d3b2;
-		background: linear-gradient(0deg, #47d3b232 0%, rgba(46, 48, 71, 1) 30%, rgba(46, 48, 71, 1) 70%, #4bb2db39 100%);
+		background: linear-gradient(
+			0deg,
+			#47d3b232 0%,
+			rgba(46, 48, 71, 1) 30%,
+			rgba(46, 48, 71, 1) 70%,
+			#4bb2db39 100%
+		);
 
 		.homepage-navbar {
 			position: absolute;
@@ -18,8 +24,8 @@
 
 			display: flex;
 			justify-content: space-between;
-			
-            padding: 20px;
+
+			padding: 20px;
 
 			img {
 				width: 100px;
@@ -33,13 +39,12 @@
 				font-size: 18px;
 				font-weight: bold;
 				color: rgb(211, 211, 211);
-
 			}
 
 			h1 {
 				margin: 0;
 
-                background: -webkit-linear-gradient(#4bb2db, #47d3b2);
+				background: -webkit-linear-gradient(#4bb2db, #47d3b2);
 				background-clip: text;
 				-webkit-text-fill-color: transparent;
 
@@ -75,13 +80,13 @@
 				flex-direction: column;
 				align-items: center;
 				justify-content: center;
-				
-                text-align: center;
-                
+
+				text-align: center;
+
 				h1 {
 					margin: 0;
 
-                    background: -webkit-linear-gradient(#4bb2db, #47d3b2);
+					background: -webkit-linear-gradient(#4bb2db, #47d3b2);
 					background-clip: text;
 					-webkit-text-fill-color: transparent;
 
@@ -93,7 +98,7 @@
 
 				p {
 					margin: 0;
-                    
+
 					font-weight: bold;
 					color: rgba(255, 255, 255, 0.849);
 					font-size: 27px;
@@ -107,10 +112,9 @@
 	.page {
 		main {
 			.homepage-navbar {
-                .left-bar {
-                    display: none;
-                }
-
+				.left-bar {
+					display: none;
+				}
 			}
 
 			.main-content {
@@ -119,9 +123,9 @@
 						font-size: 70px;
 					}
 
-                    p {
-                        font-size: 20px;
-                    }
+					p {
+						font-size: 20px;
+					}
 				}
 			}
 		}

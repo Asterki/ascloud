@@ -91,10 +91,10 @@ const Index: NextPage = () => {
 						<p>Open source cloud/local storage service</p>
 					</motion.div>
 
-                    <div className={styles["features"]}>
-                        <h1>Features</h1>
-                        <img src="https://placehold.co/600x400/000000/FFFFFF/png" alt="" />
-                    </div>
+					<div className={styles["features"]}>
+						<h1>Features</h1>
+						<img src="https://placehold.co/600x400/000000/FFFFFF/png" alt="" />
+					</div>
 				</div>
 			</main>
 		</div>

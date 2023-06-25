@@ -59,12 +59,12 @@ const Settings: NextPage<PageProps> = (props) => {
 					</div>
 
 					<div className={styles["right-content"]}>
-                        <h1>General Information</h1>
-						
-                        <h2>Username: {props.user.username}</h2>
-                        <h2>User ID: {props.user.userID}</h2>
-                        <h2>Email: {props.user.email.value}</h2>
-                        <h2>Storage Limit: {props.user.storageLimit}</h2>
+						<h1>General Information</h1>
+
+						<h2>Username: {props.user.username}</h2>
+						<h2>User ID: {props.user.userID}</h2>
+						<h2>Email: {props.user.email.value}</h2>
+						<h2>Storage Limit: {props.user.storageLimit}</h2>
 					</div>
 				</motion.div>
 			</main>

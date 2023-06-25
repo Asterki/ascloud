@@ -1,86 +1,86 @@
 import LangPack from "../types/lang";
 
 const template: typeof LangPack = {
-    main: {
-        index: {
-            title: ""
-        }
-    },
+	main: {
+		index: {
+			title: "",
+		},
+	},
 
-    accounts: {
-        register: {
-            pageTitle: "",
+	accounts: {
+		register: {
+			pageTitle: "",
 
-            modal: {
-                close: "",
+			modal: {
+				close: "",
 
-                errors: {
-                    "": "",
-                    "username-size": "",
-                    "alphanumeric": "",
+				errors: {
+					"": "",
+					"username-size": "",
+					alphanumeric: "",
 
-                    "invalid-email": "",
-                    "password-size": "",
-                    "password-match": "",
+					"invalid-email": "",
+					"password-size": "",
+					"password-match": "",
 
-                    "username-in-use": "",
-                    "unknown": "",
-                }
-            },
+					"username-in-use": "",
+					unknown: "",
+				},
+			},
 
-            form: {
-                title: "",
-                caption: "",
+			form: {
+				title: "",
+				caption: "",
 
-                usernamePlaceholder: "",
-                emailPlaceholder: "",
-                passwordPlaceholder: "",
-                repeatPasswordPlaceholder: "",
+				usernamePlaceholder: "",
+				emailPlaceholder: "",
+				passwordPlaceholder: "",
+				repeatPasswordPlaceholder: "",
 
-                activateTFA: "",
-                register: "",
+				activateTFA: "",
+				register: "",
 
-                haveAccount: "",
-            },
+				haveAccount: "",
+			},
 
-            footer: "",
-        },
-        login: {
-            pageTitle: "",
+			footer: "",
+		},
+		login: {
+			pageTitle: "",
 
-            form: {
-                title: "",
-                caption: "",
+			form: {
+				title: "",
+				caption: "",
 
-                emailUsernamePlaceholder: "",
-                passwordPlaceholder: "",
+				emailUsernamePlaceholder: "",
+				passwordPlaceholder: "",
 
-                login: "",
+				login: "",
 
-                noAccount: "",
-            },
+				noAccount: "",
+			},
 
-            tfaModal: {
-                title: "",
-                placeholder: "",
-                submit: "",
-            },
+			tfaModal: {
+				title: "",
+				placeholder: "",
+				submit: "",
+			},
 
-            errorModal: {
-                title: "",
-                close: "",
+			errorModal: {
+				title: "",
+				close: "",
 
-                errors: {
-                    "invalid-credentials": "",
-                    "invalid-tfa-code": "",
-                    "server-error": "",
-                    "invalid-parameters": "",
-                }
-            },
+				errors: {
+					"invalid-credentials": "",
+					"invalid-tfa-code": "",
+					"server-error": "",
+					"invalid-parameters": "",
+				},
+			},
 
-            footer: ""
-        }
-    }
-}
+			footer: "",
+		},
+	},
+};
 
 export default template;
