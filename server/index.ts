@@ -37,6 +37,7 @@ nextApp.prepare().then(() => {
     });
 });
 
+// Email Client
 const emailTransporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
