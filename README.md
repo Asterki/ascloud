@@ -5,14 +5,13 @@ Open source cloud storage service
 - File upload
 - File download
 - File encryption
+- Local server support, so you can add it to your home network
+- Ability to access your files directly on the app
 
 ## Planned Features
 
 - Customizable storage limit
 - Email push notifications to ensure you're aware of the activity on your account
-- Local server support, so you can add it to your home network
-- Ability to access your files directly on the app
-
 
 ## Table of Contents
 - [AsCloud](#ascloud)
