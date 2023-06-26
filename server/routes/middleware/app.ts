@@ -11,7 +11,7 @@ const rootPath = process.env.NODE_ENV == "development" ? "../../.." : "../../../
 
 // Requests
 app.use(express.json({}));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(compression());
 app.use(cors({ origin: "*" }));

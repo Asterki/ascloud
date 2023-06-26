@@ -1,6 +1,6 @@
 // * Imports
 // Lib Imports
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { get, set } from "idb-keyval";
 import axios, { AxiosResponse } from "axios";
 import crypto from "crypto";
@@ -60,6 +60,11 @@ const Home: NextPage<PageProps> = (props) => {
 	const [isLoadingContents, setIsLoadingContents] = React.useState<boolean>(true);
 	// #endregion
 
+	// * Page refs
+	// #region
+	const fileInput = React.useRef<HTMLInputElement>(null);
+	// #endregion
+
 	// * Functions
 	// #region
 	const cryptoMethods = {
@@ -108,6 +113,11 @@ const Home: NextPage<PageProps> = (props) => {
 		} while (fileSizeInBytes > 1024);
 
 		return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
+	};
+
+	const uploadFile = async (event: any) => {
+		event.preventDefault();
+		event.target.submit();
 	};
 
 	const goBackOneLevel = () => {
@@ -237,7 +247,7 @@ const Home: NextPage<PageProps> = (props) => {
 						<img src="/svg/delete-bin.svg" alt="" />
 						<img src="/svg/folder-plus.svg" alt="" />
 						<img src="/svg/link.svg" alt="" />
-						<img src="/svg/upload.svg" alt="" />
+						<img src="/svg/upload.svg" alt="upload" onClick={() => fileInput.current?.click()} />
 					</div>
 
 					{/* Folder path */}
@@ -266,6 +276,18 @@ const Home: NextPage<PageProps> = (props) => {
 						)}
 						{folderContentsElement}
 					</div>
+
+					<form
+						action="/api/storage/upload"
+						onSubmit={uploadFile}
+						method="POST"
+						encType="multipart/form-data"
+					>
+						<input type="file" name="file" id="ew" />
+						<input type="text" name="folderPath" placeholder="path" id="folderPath" />
+
+						<input type="submit" value="Submit" />
+					</form>
 				</div>
 			</main>
 		</div>

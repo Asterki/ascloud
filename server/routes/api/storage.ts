@@ -1,6 +1,9 @@
 import express from "express";
 import { z } from "zod";
 
+import path from "path";
+import multer from "multer";
+
 import * as storageService from "../../services/storage";
 
 import { User } from "../../../shared/types/models";
@@ -95,7 +98,39 @@ router.post(
 	}
 );
 
-router.post("/upload", (req, res) => {});
+router.post(
+	"/upload",
+	storageService.tempUpload.fields([{ name: "file", maxCount: 1 }, { name: "folderPath" }, { name: "fileName" }]),
+	async (req, res) => {
+		if (!req.isAuthenticated() || req.user == undefined) return res.status(403).send("unauthorized");
+
+		if (!(req.files as any).file.length) return res.status(400).send("invalid-parameters");
+
+		try {
+			// Body data schema
+			const parsedBody = z
+				.object({
+					folderPath: z.string(),
+				})
+				.required()
+				.safeParse(req.body);
+
+			if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("invalid-parameters");
+			const { folderPath } = parsedBody.data;
+
+			// Avoid path traversal attacks
+			const filePath = path.join(__dirname, `../../../storage/${(req.user as User).userID}/files/`, folderPath);
+			if (!filePath.startsWith(path.join(__dirname, `../../../storage/${(req.user as User).userID}/files`)))
+				return res.status(400).send("invalid-parameters");
+
+			// @ts-ignore
+			const result = storageService.upload(req, res, filePath, req.files.file[0].originalname);
+			res.send(result);
+		} catch (err: unknown) {
+			res.status(500).send("server-error");
+		}
+	}
+);
 
 router.post("/delete", (req, res) => {});
 
