@@ -8,6 +8,7 @@ import crypto from "crypto";
 // Component Imports
 import Head from "next/head";
 import Navbar from "@/components/navbar";
+import * as ContextMenu from "@radix-ui/react-context-menu";
 
 // State Imports
 import { store, RootState } from "@/store";
@@ -104,6 +105,88 @@ const Home: NextPage<PageProps> = (props) => {
 		},
 	};
 
+	const folderViewMethods = {
+		uploadFile: async () => {
+			// TODO: add upload confirmation
+
+			if (!fileInput.current!.files || !keys.storageIV || !keys.storageKey) return;
+			const file = fileInput.current!.files[0];
+
+			let reader = new FileReader();
+			reader.readAsDataURL(file);
+
+			reader.onloadend = async () => {
+				// Encrypt the file
+				if (!reader.result) return;
+				const encryptedResult = cryptoMethods.encrypt(
+					reader.result as string,
+					keys.storageKey!,
+					keys.storageIV!
+				);
+
+				const encryptedData = new Blob([encryptedResult], { type: "text/plain" });
+				const encryptedFile = new File([encryptedData], file.name);
+
+				const data = new FormData();
+				data.append("file", encryptedFile);
+				data.append("folderPath", currentPath);
+
+				// Upload the file
+				const response = await axios({
+					url: "/api/storage/upload",
+					method: "POST",
+					data: data,
+				});
+
+				if (response.data == "done") {
+					fileInput.current!.value = "";
+					fileInput.current!.files = null;
+					return updateFolderContents();
+				}
+			};
+		},
+
+		dataURLtoFile: (fileContent: string, fileName: string) => {
+			let arr = fileContent.split(",");
+			let mime = "";
+			if (arr[0]) {
+				const match = arr[0].match(/:(.*?);/);
+				mime = match ? match[1] : "";
+			}
+			let bstr = arr[arr.length - 1] ? atob(arr[arr.length - 1]) : "";
+			let n = bstr.length;
+			let u8arr = new Uint8Array(n);
+			while (n--) {
+				u8arr[n] = bstr.charCodeAt(n);
+			}
+			return new File([u8arr], fileName, { type: mime });
+		},
+
+		downloadFile: async (fileName: string) => {
+			const response = await axios({
+				url: "/api/storage/file",
+				method: "POST",
+				data: {
+					folderPath: currentPath,
+					fileName: fileName,
+				},
+			});
+
+			// Decrypt the file
+			const decryptedContent = cryptoMethods.decrypt(response.data, keys.storageKey!, keys.storageIV!);
+			const decryptedFile = folderViewMethods.dataURLtoFile(decryptedContent, fileName);
+
+			// Download the file
+			const url = URL.createObjectURL(decryptedFile);
+			const link = document.createElement("a");
+
+			link.href = url;
+			link.download = fileName;
+			link.click();
+			URL.revokeObjectURL(url);
+		},
+	};
+
 	const getReadableFileSizeString = (fileSizeInBytes: number) => {
 		var i = -1;
 		var byteUnits = [" kB", " MB", " GB", " TB", "PB", "EB", "ZB", "YB"];
@@ -113,42 +196,6 @@ const Home: NextPage<PageProps> = (props) => {
 		} while (fileSizeInBytes > 1024);
 
 		return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
-	};
-
-	const uploadFile = async () => {
-		// TODO: add upload confirmation
-
-		if (!fileInput.current!.files || !keys.storageIV || !keys.storageKey) return;
-		const file = fileInput.current!.files[0];
-
-		let reader = new FileReader();
-		reader.readAsDataURL(file);
-
-		reader.onloadend = async () => {
-			// Encrypt the file
-			if (!reader.result) return;
-			const encryptedResult = cryptoMethods.encrypt(reader.result as string, keys.storageKey!, keys.storageIV!);
-
-			const encryptedData = new Blob([encryptedResult], { type: "text/plain" });
-			const encryptedFile = new File([encryptedData], file.name);
-
-			const data = new FormData();
-			data.append("file", encryptedFile);
-			data.append("folderPath", currentPath);
-
-			// Upload the file
-			const response = await axios({
-				url: "/api/storage/upload",
-				method: "POST",
-				data: data,
-			});
-
-			if (response.data == "done") {
-				fileInput.current!.value = "";
-				fileInput.current!.files = null;
-				return updateFolderContents();
-			}
-		};
 	};
 
 	const goBackOneLevel = () => {
@@ -223,17 +270,25 @@ const Home: NextPage<PageProps> = (props) => {
 		.map((file) => {
 			if (!file.isDirectory) {
 				return (
-					<div
-						key={file.fileName}
-						className={`${styles["file"]} ${isLoadingContents ? styles["file-inactive"] : ""}`}
-					>
-						<img src="/svg/file.svg" alt="" />
-						<p>
-							{file.fileName} - {getReadableFileSizeString(file.fileSize)}
-						</p>
-						<br />
-						<br />
-					</div>
+					<ContextMenu.Root key={file.fileName}>
+						<ContextMenu.Trigger className="ContextMenuTrigger">
+							<div className={`${styles["file"]} ${isLoadingContents ? styles["file-inactive"] : ""}`}>
+								<img src="/svg/file.svg" alt="" />
+								<p>
+									{file.fileName} - {getReadableFileSizeString(file.fileSize)}
+								</p>
+								<br />
+								<br />
+							</div>
+						</ContextMenu.Trigger>
+						<ContextMenu.Portal>
+							<ContextMenu.Content className={"context-menu-content"}>
+								<button onClick={() => folderViewMethods.downloadFile(file.fileName)}>Download</button>
+								<button>Delete</button>
+								<button>View Properties</button>
+							</ContextMenu.Content>
+						</ContextMenu.Portal>
+					</ContextMenu.Root>
 				);
 			} else {
 				return (
@@ -311,13 +366,8 @@ const Home: NextPage<PageProps> = (props) => {
 						{folderContentsElement}
 					</div>
 
-					<form
-						action="/api/storage/upload"
-						onSubmit={uploadFile}
-						method="POST"
-						encType="multipart/form-data"
-					>
-						<input type="file" hidden onChange={uploadFile} ref={fileInput} name="file" id="ew" />
+					<form action="/api/storage/upload" method="POST" encType="multipart/form-data">
+						<input type="file" hidden onChange={folderViewMethods.uploadFile} ref={fileInput} />
 					</form>
 				</div>
 			</main>

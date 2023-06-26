@@ -21,20 +21,20 @@ router.post(
 
 		try {
 			// Ensure the route is there
-			const parsedQuery = z
+			const parsedBody = z
 				.object({
 					folderPath: z.string(),
 					fileName: z.string(),
 				})
 				.required()
-				.safeParse(req.query);
+				.safeParse(req.body);
 
-			if (!parsedQuery.success && "error" in parsedQuery) return res.status(400).send("invalid-parameters");
+			if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("invalid-parameters");
 
 			const filePath = storageService.getFile(
 				(req.user as User).userID,
-				parsedQuery.data.folderPath,
-				parsedQuery.data.fileName
+				parsedBody.data.folderPath,
+				parsedBody.data.fileName
 			);
 			if (filePath == "no-file") return res.send(filePath);
 			else return res.sendFile(filePath);
@@ -54,16 +54,16 @@ router.post(
 
 		try {
 			// Ensure the route is there
-			const parsedQuery = z
+			const parsedBody = z
 				.object({
 					folderPath: z.string(),
 				})
 				.required()
 				.safeParse(req.query);
 
-			if (!parsedQuery.success && "error" in parsedQuery) return res.status(400).send("invalid-parameters");
+			if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("invalid-parameters");
 
-			const results = storageService.getFolderContents((req.user as User).userID, parsedQuery.data.folderPath);
+			const results = storageService.getFolderContents((req.user as User).userID, parsedBody.data.folderPath);
 			res.send(results);
 		} catch (err: unknown) {
 			res.status(500).send("server-error");
@@ -81,16 +81,16 @@ router.post(
 
 		try {
 			// Ensure the route is there
-			const parsedQuery = z
+			const parsedBody = z
 				.object({
 					folderPath: z.string(),
 				})
 				.required()
 				.safeParse(req.query);
 
-			if (!parsedQuery.success && "error" in parsedQuery) return res.status(400).send("invalid-parameters");
+			if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("invalid-parameters");
 
-			const results = storageService.createFolder((req.user as User).userID, parsedQuery.data.folderPath);
+			const results = storageService.createFolder((req.user as User).userID, parsedBody.data.folderPath);
 			res.send(results);
 		} catch (err: unknown) {
 			res.status(500).send("server-error");
@@ -148,18 +148,18 @@ router.post(
 
 		try {
 			// Ensure the route is there
-			const parsedQuery = z
+			const parsedBody = z
 				.object({
 					filePath: z.string(),
 				})
 				.required()
 				.safeParse(req.query);
 
-			if (!parsedQuery.success && "error" in parsedQuery) return res.status(400).send("invalid-parameters");
+			if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("invalid-parameters");
 
 			const results = storageService.permanentDeleteFileOrFolder(
 				(req.user as User).userID,
-				parsedQuery.data.filePath
+				parsedBody.data.filePath
 			);
 			res.send(results);
 		} catch (err: unknown) {

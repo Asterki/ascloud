@@ -35,3 +35,18 @@ button {
 		filter: brightness(1.1);
 	}
 }
+
+.context-menu-content {
+	border: 2px solid #5558773a;
+	border-radius: 10px;
+	padding: 5px;
+
+	background-color: #3c3f58;
+	transition: all 0.1s ease-in-out;
+
+	button {
+		text-align: left;
+		
+		background-color: #3c3f58;
+	}
+}
