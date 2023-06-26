@@ -1,9 +1,13 @@
 # AsCloud
 Open source cloud storage service 
 
+## Current Features
+- File upload
+- File download
+- File encryption
+
 ## Planned Features
 
-- File encryption
 - Customizable storage limit
 - Email push notifications to ensure you're aware of the activity on your account
 - Local server support, so you can add it to your home network
@@ -12,6 +16,7 @@ Open source cloud storage service
 
 ## Table of Contents
 - [AsCloud](#ascloud)
+  - [Current Features](#current-features)
   - [Planned Features](#planned-features)
   - [Table of Contents](#table-of-contents)
 - [Setup](#setup)
