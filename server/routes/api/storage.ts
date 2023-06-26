@@ -124,7 +124,7 @@ router.post(
 				return res.status(400).send("invalid-parameters");
 
 			// @ts-ignore
-			const result = storageService.upload(req, res, filePath, req.files.file[0].originalname);
+			const result = await storageService.upload(req, res, filePath, req.files.file[0].originalname);
 			res.send(result);
 		} catch (err: unknown) {
 			res.status(500).send("server-error");

@@ -115,14 +115,62 @@ const Home: NextPage<PageProps> = (props) => {
 		return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
 	};
 
-	const uploadFile = async (event: any) => {
-		event.preventDefault();
-		event.target.submit();
+	const uploadFile = async () => {
+		// TODO: add upload confirmation
+
+		if (!fileInput.current!.files || !keys.storageIV || !keys.storageKey) return;
+		const file = fileInput.current!.files[0];
+
+		let reader = new FileReader();
+		reader.readAsDataURL(file);
+
+		reader.onloadend = async () => {
+			// Encrypt the file
+			if (!reader.result) return;
+			const encryptedResult = cryptoMethods.encrypt(reader.result as string, keys.storageKey!, keys.storageIV!);
+
+			const encryptedData = new Blob([encryptedResult], { type: "text/plain" });
+			const encryptedFile = new File([encryptedData], file.name);
+
+			const data = new FormData();
+			data.append("file", encryptedFile);
+			data.append("folderPath", currentPath);
+
+			// Upload the file
+			const response = await axios({
+				url: "/api/storage/upload",
+				method: "POST",
+				data: data,
+			});
+
+			if (response.data == "done") {
+				fileInput.current!.value = "";
+				fileInput.current!.files = null;
+				return updateFolderContents();
+			}
+		};
 	};
 
 	const goBackOneLevel = () => {
 		setIsLoadingContents(true);
 		setCurrentPath(currentPath.replace(/\/[^\/]+\/$/, "/"));
+	};
+
+	const updateFolderContents = async () => {
+		const folderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
+			method: "POST",
+			url: "/api/storage/get-folder-contents",
+			params: {
+				folderPath: currentPath,
+			} as GetFolderContentsRequestBody,
+		});
+
+		if (typeof folderResponse.data == "object") {
+			setFolderContents(folderResponse.data);
+			setIsLoadingContents(false);
+		} else {
+			// TODO: error handling here
+		}
 	};
 	// #endregion
 
@@ -162,22 +210,7 @@ const Home: NextPage<PageProps> = (props) => {
 	React.useEffect(() => {
 		// Every time the user interacts with the folders, or changes paths
 		// It will retrieve the folders on that path
-		(async () => {
-			const folderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
-				method: "POST",
-				url: "/api/storage/get-folder-contents",
-				params: {
-					folderPath: currentPath,
-				} as GetFolderContentsRequestBody,
-			});
-
-			if (typeof folderResponse.data == "object") {
-				setFolderContents(folderResponse.data);
-				setIsLoadingContents(false);
-			} else {
-				// TODO: error handling here
-			}
-		})();
+		updateFolderContents();
 	}, [currentPath]);
 	// #endregion
 
@@ -248,6 +281,7 @@ const Home: NextPage<PageProps> = (props) => {
 						<img src="/svg/folder-plus.svg" alt="" />
 						<img src="/svg/link.svg" alt="" />
 						<img src="/svg/upload.svg" alt="upload" onClick={() => fileInput.current?.click()} />
+						<button onClick={updateFolderContents}>Update Folder Contents</button>
 					</div>
 
 					{/* Folder path */}
@@ -283,10 +317,7 @@ const Home: NextPage<PageProps> = (props) => {
 						method="POST"
 						encType="multipart/form-data"
 					>
-						<input type="file" name="file" id="ew" />
-						<input type="text" name="folderPath" placeholder="path" id="folderPath" />
-
-						<input type="submit" value="Submit" />
+						<input type="file" hidden onChange={uploadFile} ref={fileInput} name="file" id="ew" />
 					</form>
 				</div>
 			</main>
