@@ -8,7 +8,7 @@
 		"start:clean": "rm -rf ./build/* && npm i",
 		"start:build-server": "tsc -p ./server/tsconfig.json",
 		"start:build-client": "next build",
-		"start:run-server": "cross-env NODE_ENV=production node ./build/server/index.js",
+		"start:run-server": "cross-env NODE_ENV=production node ./build/server/web-client/server/index.js",
 		"build": "next build",
 		"lint": "next lint && npx eslint"
 	},

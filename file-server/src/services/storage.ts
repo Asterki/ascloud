@@ -9,7 +9,7 @@ import { User } from "../../../shared/types/models";
 // * Storages
 const tempStorage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		const fullPath = path.join(__dirname, `../../storage/${(req.user as User).userID}/temp/`);
+		const fullPath = path.join(__dirname, `${storageRoot}/${(req.user as User).userID}/temp/`);
 		cb(null, fullPath);
 	},
 	filename: (req, file, cb) => {
@@ -17,6 +17,8 @@ const tempStorage = multer.diskStorage({
 	},
 });
 const tempUpload = multer({ storage: tempStorage });
+
+const storageRoot = process.env.NODE_ENV == "development" ? "../../storage" : "../../../../storage";
 
 // * Service Methods
 // #region
@@ -29,8 +31,8 @@ const addTrailingSlash = (filePath: string): string => {
 
 const getFile = (userID: string, folderPath: string, fileName: string): string | "no-file" => {
 	// Ensure the file is there
-	const fileFound = path.join(__dirname, `../../storage/${userID}/files`, folderPath, fileName);
-	if (!fileFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "no-file"; // no path traversal attacks today guys
+	const fileFound = path.join(__dirname, `${storageRoot}/${userID}/files`, folderPath, fileName);
+	if (!fileFound.startsWith(path.join(__dirname, `${storageRoot}/${userID}/files`))) return "no-file"; // no path traversal attacks today guys
 
 	const stats = fs.statSync(fileFound);
 	if (stats.isFile()) {
@@ -44,8 +46,8 @@ const getFolderContents = (
 	userID: string,
 	folderPath: string
 ): Array<{ isDirectory: boolean; fileName: string; fileSize: number }> | "no-folder" => {
-	const folderFound = path.join(__dirname, `../../storage/${userID}/files`, folderPath); // Get the route
-	if (!folderFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "no-folder";
+	const folderFound = path.join(__dirname, `${storageRoot}/${userID}/files`, folderPath); // Get the route
+	if (!folderFound.startsWith(path.join(__dirname, `${storageRoot}/${userID}/files`))) return "no-folder";
 
 	// Get the information about that folder path
 	const stats = fs.statSync(folderFound);
@@ -78,8 +80,8 @@ const createFolder = (userID: string, folderPath: string): "done" | "folder-exis
 	const folderNameRegex = /^[^\\/:*?"<>|]+$/;
 	if (!folderNameRegex.test(folderPath)) return "invalid-name";
 
-	const folderFound = addTrailingSlash(path.join(__dirname, `../../storage/${userID}/files${folderPath}`)); // Get the route
-	if (!folderFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "invalid-name";
+	const folderFound = addTrailingSlash(path.join(__dirname, `${storageRoot}/${userID}/files${folderPath}`)); // Get the route
+	if (!folderFound.startsWith(path.join(__dirname, `${storageRoot}/${userID}/files`))) return "invalid-name";
 
 	// Get the information about that folder path
 	const stats = fs.statSync(folderFound);
@@ -94,12 +96,7 @@ const createFolder = (userID: string, folderPath: string): "done" | "folder-exis
 	return "done";
 };
 
-const upload = async (
-	req: express.Request,
-	res: express.Response,
-	filePath: string,
-	fileName: string,
-) => {
+const upload = async (req: express.Request, res: express.Response, filePath: string, fileName: string) => {
 	// Check if the file name is already in use
 	if (fs.existsSync(path.join(filePath, fileName))) return "file-exists";
 
@@ -111,7 +108,7 @@ const upload = async (
 
 	// Once it's done, move it to the main folder
 	fs.renameSync(
-		path.join(__dirname, `../../storage/${(req.user as User).userID}/temp/${fileName}`),
+		path.join(__dirname, `${storageRoot}/${(req.user as User).userID}/temp/${fileName}`),
 		path.join(filePath, fileName)
 	);
 
@@ -120,13 +117,13 @@ const upload = async (
 
 const deleteFileOrFolder = (userID: string, filePath: string): "done" | "no-file" => {
 	// Ensure the file is there
-	const fileFound = addTrailingSlash(path.join(__dirname, `../../storage/${userID}/files/${filePath}`));
-	if (!fileFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "no-file";
+	const fileFound = addTrailingSlash(path.join(__dirname, `${storageRoot}/${userID}/files/${filePath}`));
+	if (!fileFound.startsWith(path.join(__dirname, `${storageRoot}/${userID}/files`))) return "no-file";
 
 	const stats = fs.statSync(fileFound);
 
 	if (stats.isFile()) {
-		fs.moveSync(fileFound, `../../storage/${userID}/bin/`);
+		fs.moveSync(fileFound, `${storageRoot}/${userID}/bin/`);
 		return "done";
 	} else {
 		return "no-file";
@@ -135,8 +132,8 @@ const deleteFileOrFolder = (userID: string, filePath: string): "done" | "no-file
 
 const permanentDeleteFileOrFolder = (userID: string, filePath: string): "done" | "no-file" => {
 	// Ensure the file is there
-	const fileFound = addTrailingSlash(path.join(__dirname, `../../storage/${userID}/files/${filePath}`));
-	if (!fileFound.startsWith(path.join(__dirname, `../../storage/${userID}/files`))) return "no-file";
+	const fileFound = addTrailingSlash(path.join(__dirname, `${storageRoot}/${userID}/files/${filePath}`));
+	if (!fileFound.startsWith(path.join(__dirname, `${storageRoot}/${userID}/files`))) return "no-file";
 
 	const stats = fs.statSync(fileFound);
 

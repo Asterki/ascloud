@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 import chalk from "chalk";
 
+import { config } from ".."
+
 // Connect to mongodb
 mongoose.set("strictQuery", true);
 mongoose.connect(
-	process.env.MONGODB_URI as string,
+	config.mongoURI,
 	{
 		useUnifiedTopology: true,
 		useNewUrlParser: true,

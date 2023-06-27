@@ -10,32 +10,32 @@ import speakeasy from "speakeasy";
 import { mkdirp } from "mkdirp";
 import path from "path";
 
-import { app } from "../";
+import { app, config } from "../";
 
 import UserModel from "../models/user";
 
-import type { User } from "../../shared/types/models";
+import type { User } from "../../../shared/types/models";
 import { Document } from "mongoose";
 
 const sessionStore = mongoStore.create({
-	mongoUrl: process.env.MONGODB_URI as string,
+	mongoUrl: config.mongoURI,
 });
 
 // Cookie session
 app.use(
 	expressSession({
-		secret: process.env.SESSION_SECRET as string,
+		secret: config.sessions.secret,
 		resave: false,
 		saveUninitialized: true,
 		store: sessionStore,
 		cookie: {
-			secure: (process.env.COOKIE_SECURE as string) == "true",
-			maxAge: parseInt(process.env.COOKIE_MAX_AGE as string) || 604800000,
+			secure: config.sessions.cookieSecure,
+			maxAge: config.sessions.cookieMaxAge,
 		},
 	})
 );
 
-app.use(cookieParser(process.env.SESSION_SECRET));
+app.use(cookieParser(config.sessions.secret));
 app.use(passport.initialize());
 app.use(passport.session());
 

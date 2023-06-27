@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 // Styles And Types Imports
 import styles from "@/styles/accounts/settings/index.module.scss";
-import { User } from "../../../../shared/types/models";
+import { User } from "../../../../../shared/types/models";
 import { GetServerSideProps, NextPage } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {

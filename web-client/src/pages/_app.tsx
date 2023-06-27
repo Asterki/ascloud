@@ -9,13 +9,13 @@ import { setLanguage } from "@/store/pageSlice";
 
 import "@/styles/globals.scss";
 import type { AppProps } from "next/app";
-import LangPack from "../../shared/types/lang";
+import LangPack from "../../../shared/types/lang";
 
 const CustomApp = ({ Component, pageProps }: AppProps) => {
 	React.useEffect(() => {
 		if ("language" in navigator) {
 			const languages = {
-				en: require("../../shared/locales/en").default as typeof LangPack,
+				en: require("../../locales/en").default as typeof LangPack,
 			};
 
 			// Get the supported language files and the languages that the browser supports
@@ -54,14 +54,14 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
 				{/* <!-- Open Graph / Facebook --> */}
 				<meta property="og:type" content="website" />
 				<meta property="og:url" content="https://ascloud.ml/" />
-				<meta property="og:title" content="ascloud" />
+				<meta property="og:title" content="AsCloud" />
 				<meta property="og:description" content="Cloud storage service" />
 				<meta property="og:image" content="/assets/images/banner.png" />
 
 				{/* <!-- Twitter --> */}
 				<meta property="twitter:card" content="summary_large_image" />
 				<meta property="twitter:url" content="https://ascloud.ml/" />
-				<meta property="twitter:title" content="ascloud" />
+				<meta property="twitter:title" content="AsCloud" />
 				<meta property="twitter:description" content="Cloud storage service" />
 				<meta property="twitter:image" content="/assets/images/banner.png" />
 			</Head>

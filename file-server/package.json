@@ -1,4 +1,17 @@
 {
+	"name": "file-server",
+	"version": "1.0.0",
+	"main": "./src/index.ts",
+	"author": "Asterki",
+	"license": "ISC",
+	"description": "",
+	"scripts": {
+		"dev": "cross-env NODE_ENV=development nodemon --config ./nodemon.json ./src/index.ts",
+		"start": "npm-run-all start:*",
+		"start:clean": "rm -rf ./build/* && npm i",
+		"start:build-server": "tsc -p ./tsconfig.json",
+		"start:run-server": "cross-env NODE_ENV=production node ./build/file-server/src/index.js"
+	},
 	"dependencies": {
 		"compression": "^1.7.4",
 		"connect-mongo": "^5.0.0",
@@ -29,21 +42,5 @@
 		"@types/multer": "^1.4.7",
 		"@types/node": "^20.3.2",
 		"@types/passport": "^1.0.12"
-	},
-	"name": "file-server",
-	"version": "1.0.0",
-	"main": "./src/index.ts",
-	"scripts": {
-		"dev": "cross-env NODE_ENV=development nodemon --config ./nodemon.json ./src/index.ts",
-		"start": "npm-run-all start:*",
-		"start:clean": "rm -rf ./build/* && npm i",
-		"start:build-server": "tsc -p ./server/tsconfig.json",
-		"start:build-client": "next build",
-		"start:run-server": "cross-env NODE_ENV=production node ./build/server/index.js",
-		"build": "next build",
-		"lint": "next lint && npx eslint"
-	},
-	"author": "Asterki",
-	"license": "ISC",
-	"description": ""
+	}
 }

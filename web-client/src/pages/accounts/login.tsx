@@ -18,7 +18,7 @@ import { RootState } from "@/store";
 // Styles And Types Imports
 import styles from "@/styles/accounts/login.module.scss";
 import { GetServerSideProps, NextPage } from "next";
-import { LoginRequestBody, LoginResponse } from "../../../shared/types/api/accounts";
+import { LoginRequestBody, LoginResponse } from "../../../../shared/types/api/accounts";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	// Check if the user is logged in

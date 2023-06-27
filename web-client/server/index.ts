@@ -8,6 +8,7 @@ import path from "path";
 import dotenv from "dotenv";
 
 const dev = process.env.NODE_ENV == "development";
+import config from "../../shared/config";
 
 dotenv.config({ path: path.join(__dirname, dev ? "../.env.local" : "../.env.production") });
 
@@ -22,7 +23,6 @@ nextApp.prepare().then(() => {
 	// Load all the configuration
 	require("./services/databases");
 	require("./services/accounts");
-	// require("./services/storage");
 	require("./routes/router");
 
 	app.get("*", (req: express.Request, res: express.Response) => {
@@ -30,10 +30,10 @@ nextApp.prepare().then(() => {
 	});
 
 	// Start the main server
-	server.listen(process.env.PORT, () => {
+	server.listen(config.mainServer.port, () => {
 		console.log(
 			`- ${chalk.magenta("event")} - Server running in ${dev ? "development" : "production"} mode at ${
-				process.env.PORT
+				config.mainServer.port
 			}`
 		);
 	});
@@ -41,11 +41,11 @@ nextApp.prepare().then(() => {
 
 // Email Client
 const emailTransporter = nodemailer.createTransport({
-	service: "Gmail",
+	service: config.emailClient.service,
 	auth: {
-		user: process.env.EMAIL_AUTH_USER,
-		pass: process.env.EMAIL_AUTH_PASS,
+		user: config.emailClient.user,
+		pass: config.emailClient.pass,
 	},
 });
 
-export { app, nextApp, server, emailTransporter };
+export { app, nextApp, server, emailTransporter, config };

@@ -18,8 +18,8 @@ import { setKeys } from "@/store/keysSlice";
 // Styles And Types Imports
 import styles from "@/styles/main/home/index.module.scss";
 import { GetServerSideProps, NextPage } from "next";
-import { User } from "@/../shared/types/models";
-import { GetFolderContentsRequestBody, GetFolderContentsResponse } from "@/../shared/types/api/storage";
+import { User } from "@/../../shared/types/models";
+import { GetFolderContentsRequestBody, GetFolderContentsResponse } from "@/../../shared/types/api/storage";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	if (!context.req.isAuthenticated())
@@ -133,7 +133,7 @@ const Home: NextPage<PageProps> = (props) => {
 
 				// Upload the file
 				const response = await axios({
-					url: "http://localhost:8080/api/storage/upload",
+					url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/upload`,
 					method: "POST",
 					withCredentials: true,
 					data: data,
@@ -165,7 +165,7 @@ const Home: NextPage<PageProps> = (props) => {
 
 		downloadFile: async (fileName: string) => {
 			const response = await axios({
-				url: "http://localhost:8080/api/storage/file",
+				url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/file`,
 				method: "POST",
 				withCredentials: true,
 				data: {
@@ -209,7 +209,7 @@ const Home: NextPage<PageProps> = (props) => {
 		const folderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
 			method: "POST",
 			withCredentials: true,
-			url: "http://localhost:8080/api/storage/get-folder-contents",
+			url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/get-folder-contents`,
 			params: {
 				folderPath: currentPath,
 			} as GetFolderContentsRequestBody,
@@ -243,7 +243,7 @@ const Home: NextPage<PageProps> = (props) => {
 					const rootFolderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
 						method: "POST",
 						withCredentials: true,
-						url: "http://localhost:8080/api/storage/get-folder-contents",
+						url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/get-folder-contents`,
 						params: {
 							folderPath: "/",
 						} as GetFolderContentsRequestBody,
@@ -371,7 +371,7 @@ const Home: NextPage<PageProps> = (props) => {
 						{folderContentsElement}
 					</div>
 
-					<form action="http://localhost:8080/api/storage/upload" method="POST" encType="multipart/form-data">
+					<form action="wa" method="POST" encType="multipart/form-data">
 						<input type="file" hidden onChange={folderViewMethods.uploadFile} ref={fileInput} />
 					</form>
 				</div>

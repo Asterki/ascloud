@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 
 import styles from "../styles/components/navbar.module.scss";
-import { User } from "../../shared/types/models";
+import { User } from "../../../shared/types/models";
 import { NextPage } from "next";
 
 interface ComponentProps {
