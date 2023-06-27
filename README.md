@@ -1,7 +1,9 @@
 # AsCloud
+
 Open source cloud storage service based on a service infrastructure
 
 ## Current Features
+
 - File upload
 - File download
 - File encryption
@@ -14,20 +16,20 @@ Open source cloud storage service based on a service infrastructure
 - Email push notifications to ensure you're aware of the activity on your account
 
 ## Table of Contents
+
 - [AsCloud](#ascloud)
   - [Current Features](#current-features)
   - [Planned Features](#planned-features)
   - [Table of Contents](#table-of-contents)
 - [Setup](#setup)
   - [Requirements](#requirements)
-  - [Environment Variables](#environment-variables)
-  - [Running on development mode](#running-on-development-mode)
-  - [Running on production mode](#running-on-production-mode)
+  - [Setting up the configuration](#setting-up-the-configuration)
+  - [Running the code](#running-the-code)
 - [Technologies Used](#technologies-used)
   - [Frontend](#frontend)
   - [Backend](#backend)
 - [Extra information](#extra-information)
-  - [Borwsers tested in](#borwsers-tested-in)
+  - [Browsers tested in](#browsers-tested-in)
   - [Operative systems tested in](#operative-systems-tested-in)
 - [License](#license)
 
@@ -39,46 +41,22 @@ Open source cloud storage service based on a service infrastructure
 Ensure that you have the requirements, installed dependencies, and have set the environment variables before you run the code
 
 ## Requirements
+
 - Node >v18.13.0
-- MongoDB >4.4 
+- MongoDB >4.4
 - Linux, macOS or WSL (Recommended)
-- NPM >8.19.3 
+- NPM >8.19.3
 
-<br>
+## Setting up the configuration
 
-## Environment Variables
-The following variables must be stored in a file named `.env.local`, these variables are prone to change
-| Variable             | Description                                             | Required | Default              |
-|----------------------|---------------------------------------------------------|----------|----------------------|
-| MONGODB_URI          | MongoDB URI String                                      | false    | mongodb://127.0.0.1/ |
-| PORT                 | The port client will listen to in production mode       | false    | 8080                 |
-| SESSION_SECRET       | The secret the sessions will be encrypted with          | true     | No Default           |
-| COOKIE_SECURE        | Wether the cookie is under HTTPS or not                 | false    | false                |
-| COOKIE_MAX_AGE       | How long the sessions will last (in milliseconds)       | false    | 604800000            |
-| SERVER_PORT          | The port the server will listen to on dev and prod mode | false    | 3030                 |
+Go to the [shared](/shared/) folder, rename the [config.example.ts](/shared/config.example.ts) to `config.ts`, open the file in a text editor and edit the file to accommodate to your environment
 
+## Running the code
 
-<br>
+Each folder has their build and run instructions
 
-## Running on development mode
-
-On a terminal, run the following command
-```bash
-$ npm run dev
-``` 
-
-Then you can access the site at the specified port
-
-<br>
-
-## Running on production mode
-
-On a console, run the following command:
-```bash
-$ npm run start
-``` 
-
-This will automatically build and run the server on production mode
+- [web-client](/web-client/README.md)
+- [file-server](/file-server/README.md)
 
 <br>
 <br>
@@ -106,7 +84,9 @@ If you want to edit the code, you may want to be familiar with the following pro
 
 # Extra information
 
-## Borwsers tested in
+
+## Browsers tested in
+
 ![Brave](https://img.shields.io/badge/Brave-FB542B?style=for-the-badge&logo=Brave&logoColor=white) ![Edge](https://img.shields.io/badge/Edge-0078D7?style=for-the-badge&logo=Microsoft-edge&logoColor=white) ![Firefox](https://img.shields.io/badge/Firefox-FF7139?style=for-the-badge&logo=Firefox-Browser&logoColor=white) ![Google Chrome](https://img.shields.io/badge/Google%20Chrome-4285F4?style=for-the-badge&logo=GoogleChrome&logoColor=white) ![Opera](https://img.shields.io/badge/Opera-FF1B2D?style=for-the-badge&logo=Opera&logoColor=white)
 
 <br>

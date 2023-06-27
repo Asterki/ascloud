@@ -6,6 +6,12 @@ FROM node:${NODE_VERSION}
 # Set the working directory for the application.
 WORKDIR /home/user/app
 
+# Copy the application code.
+COPY . ./web-client
+COPY ../shared/ ./shared
+
+WORKDIR /home/user/app/web-client
+
 # Copy the package.json and package-lock.json files.
 COPY package*.json ./
 
@@ -15,9 +21,6 @@ RUN npm ci --production
 # Install development dependencies and global TypeScript compiler.
 RUN npm ci --only=development \
     && npm install -g typescript
-
-# Copy the application code.
-COPY . .
 
 # Build the TypeScript files.
 RUN npm run start:clean\
