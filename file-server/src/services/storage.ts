@@ -132,7 +132,7 @@ const deleteFileOrFolder = (userID: string, filePath: string): "done" | "no-file
 
 const permanentDeleteFileOrFolder = (userID: string, filePath: string): "done" | "no-file" => {
 	// Ensure the file is there
-	const fileFound = addTrailingSlash(path.join(__dirname, `${storageRoot}/${userID}/files/${filePath}`));
+	const fileFound = path.join(__dirname, `${storageRoot}/${userID}/files/${filePath}`);
 	if (!fileFound.startsWith(path.join(__dirname, `${storageRoot}/${userID}/files`))) return "no-file";
 
 	const stats = fs.statSync(fileFound);

@@ -59,7 +59,7 @@ router.post(
 					folderPath: z.string(),
 				})
 				.required()
-				.safeParse(req.query);
+				.safeParse(req.body);
 
 			if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("invalid-parameters");
 
