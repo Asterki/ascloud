@@ -24,6 +24,6 @@
 		},
 		"typeRoots": ["./node_modules/@types"]
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../file-server/src/services/storage.ts"],
 	"exclude": ["node_modules"]
 }

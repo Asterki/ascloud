@@ -1,5 +1,5 @@
 # AsCloud
-Open source cloud storage service 
+Open source cloud storage service based on a service infrastructure
 
 ## Current Features
 - File upload
