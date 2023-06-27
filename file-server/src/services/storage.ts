@@ -94,7 +94,12 @@ const createFolder = (userID: string, folderPath: string): "done" | "folder-exis
 	return "done";
 };
 
-const upload = async (req: express.Request, res: express.Response, filePath: string, fileName: string, userID: string) => {
+const upload = async (
+	req: express.Request,
+	res: express.Response,
+	filePath: string,
+	fileName: string,
+) => {
 	// Check if the file name is already in use
 	if (fs.existsSync(path.join(filePath, fileName))) return "file-exists";
 
@@ -106,7 +111,7 @@ const upload = async (req: express.Request, res: express.Response, filePath: str
 
 	// Once it's done, move it to the main folder
 	fs.renameSync(
-		path.join(__dirname, `../../storage/${userID}/temp/${fileName}`),
+		path.join(__dirname, `../../storage/${(req.user as User).userID}/temp/${fileName}`),
 		path.join(filePath, fileName)
 	);
 

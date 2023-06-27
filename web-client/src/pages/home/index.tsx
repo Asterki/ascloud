@@ -133,8 +133,9 @@ const Home: NextPage<PageProps> = (props) => {
 
 				// Upload the file
 				const response = await axios({
-					url: "/api/storage/upload",
+					url: "http://localhost:8080/api/storage/upload",
 					method: "POST",
+					withCredentials: true,
 					data: data,
 				});
 
@@ -164,8 +165,9 @@ const Home: NextPage<PageProps> = (props) => {
 
 		downloadFile: async (fileName: string) => {
 			const response = await axios({
-				url: "/api/storage/file",
+				url: "http://localhost:8080/api/storage/file",
 				method: "POST",
+				withCredentials: true,
 				data: {
 					folderPath: currentPath,
 					fileName: fileName,
@@ -206,7 +208,8 @@ const Home: NextPage<PageProps> = (props) => {
 	const updateFolderContents = async () => {
 		const folderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
 			method: "POST",
-			url: "/api/storage/get-folder-contents",
+			withCredentials: true,
+			url: "http://localhost:8080/api/storage/get-folder-contents",
 			params: {
 				folderPath: currentPath,
 			} as GetFolderContentsRequestBody,
@@ -239,7 +242,8 @@ const Home: NextPage<PageProps> = (props) => {
 					// Get the root folder contents
 					const rootFolderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
 						method: "POST",
-						url: "/api/storage/get-folder-contents",
+						withCredentials: true,
+						url: "http://localhost:8080/api/storage/get-folder-contents",
 						params: {
 							folderPath: "/",
 						} as GetFolderContentsRequestBody,
@@ -258,6 +262,7 @@ const Home: NextPage<PageProps> = (props) => {
 		// Every time the user interacts with the folders, or changes paths
 		// It will retrieve the folders on that path
 		updateFolderContents();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentPath]);
 	// #endregion
 
@@ -366,7 +371,7 @@ const Home: NextPage<PageProps> = (props) => {
 						{folderContentsElement}
 					</div>
 
-					<form action="/api/storage/upload" method="POST" encType="multipart/form-data">
+					<form action="http://localhost:8080/api/storage/upload" method="POST" encType="multipart/form-data">
 						<input type="file" hidden onChange={folderViewMethods.uploadFile} ref={fileInput} />
 					</form>
 				</div>

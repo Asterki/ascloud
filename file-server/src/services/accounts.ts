@@ -2,8 +2,9 @@ import expressSession from "express-session";
 import mongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
 import passport from "passport";
+import mongoose from "mongoose";
 
-import { app } from "../";
+import { app, config } from "../";
 
 import UserModel from "../models/user";
 
@@ -11,22 +12,24 @@ import type { User } from "../../../shared/types/models";
 import { Document } from "mongoose";
 
 // Cookie session
+const sessionStore = mongoStore.create({
+	mongoUrl: config.mongoURI,
+});
+
 app.use(
 	expressSession({
-		secret: process.env.SESSION_SECRET as string,
+		secret: config.sessions.secret,
 		resave: false,
 		saveUninitialized: true,
-		store: mongoStore.create({
-			mongoUrl: process.env.MONGODB_URI as string,
-		}),
+		store: sessionStore,
 		cookie: {
-			secure: (process.env.COOKIE_SECURE as string) == "true",
-			maxAge: parseInt(process.env.COOKIE_MAX_AGE as string) || 604800000,
+			secure: config.sessions.cookieSecure,
+			maxAge: config.sessions.cookieMaxAge,
 		},
 	})
 );
 
-app.use(cookieParser(process.env.SESSION_SECRET));
+app.use(cookieParser(config.sessions.secret));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -34,4 +37,6 @@ app.use(passport.session());
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
 
-const createUserFolder = () => {}
+const createUserFolder = () => {};
+
+export { createUserFolder };

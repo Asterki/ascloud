@@ -6,8 +6,8 @@ import multer from "multer";
 
 import * as storageService from "../../../../file-server/src/services/storage";
 
-import { User } from "../../../shared/types/models";
-import * as RouteTypes from "../../../shared/types/api/storage";
+import { User } from "../../../../shared/types/models";
+import * as RouteTypes from "../../../../shared/types/api/storage";
 
 const router: express.Router = express.Router();
 

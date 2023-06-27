@@ -6,10 +6,11 @@ import path from "path";
 import dotenv from "dotenv";
 
 const dev = process.env.NODE_ENV == "development";
+import config from "../../shared/config";
 
 dotenv.config({ path: path.join(__dirname, dev ? "../.env.local" : "../.env.production") });
 
-// Declare the servers that we're gonna use
+// Declare the servers that we're going to use
 const app = express();
 const server = http.createServer(app);
 
@@ -20,12 +21,12 @@ require("./services/storage");
 require("./routes/router");
 
 // Start the files server
-server.listen(process.env.PORT, () => {
+server.listen(config.fileServer.port, () => {
 	console.log(
 		`- ${chalk.magenta("event")} - Server running in ${dev ? "development" : "production"} mode at ${
-			process.env.PORT
+			config.fileServer.port
 		}`
 	);
 });
 
-export { app, server };
+export { app, server, config };

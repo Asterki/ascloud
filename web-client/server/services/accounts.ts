@@ -17,15 +17,17 @@ import UserModel from "../models/user";
 import type { User } from "../../shared/types/models";
 import { Document } from "mongoose";
 
+const sessionStore = mongoStore.create({
+	mongoUrl: process.env.MONGODB_URI as string,
+});
+
 // Cookie session
 app.use(
 	expressSession({
 		secret: process.env.SESSION_SECRET as string,
 		resave: false,
 		saveUninitialized: true,
-		store: mongoStore.create({
-			mongoUrl: process.env.MONGODB_URI as string,
-		}),
+		store: sessionStore,
 		cookie: {
 			secure: (process.env.COOKIE_SECURE as string) == "true",
 			maxAge: parseInt(process.env.COOKIE_MAX_AGE as string) || 604800000,

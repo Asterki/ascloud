@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 import Head from "next/head";
 import Link from "next/link";
@@ -11,13 +12,13 @@ import styles from "@/styles/main/index.module.scss";
 import { GetServerSideProps, NextPage } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-	if (context.req.isAuthenticated())
-		return {
-			redirect: {
-				destination: "/home",
-				permanent: false,
-			},
-		};
+	// if (context.req.isAuthenticated())
+	// 	return {
+	// 		redirect: {
+	// 			destination: "/home",
+	// 			permanent: false,
+	// 		},
+	// 	};
 
 	return {
 		props: {},
@@ -25,6 +26,16 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 };
 
 const Index: NextPage = () => {
+	const sendRequest = async () => {
+		const response = await axios({
+			url: "http://localhost:8080/api/test/test",
+			method: "POST",
+			withCredentials: true,
+		});
+
+		console.log(response.data);
+	};
+
 	return (
 		<div className={styles["page"]}>
 			<main>
@@ -92,8 +103,7 @@ const Index: NextPage = () => {
 					</motion.div>
 
 					<div className={styles["features"]}>
-						<h1>Features</h1>
-						<img src="https://placehold.co/600x400/000000/FFFFFF/png" alt="" />
+						<button onClick={() => sendRequest()}>Click</button>
 					</div>
 				</div>
 			</main>
