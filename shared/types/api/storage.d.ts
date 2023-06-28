@@ -1,50 +1,85 @@
-// File
-interface FileRequestBody {
-	folderPath: string;
-	fileName: string;
+// #region File
+interface DownloadFileRequestBody {
+  folderPath: string;
+  fileName: string;
 }
+type DownloadFileResponse =
+  | "server-error"
+  | "unauthorized"
+  | "missing-parameters"
+  | "no-file";
 
-type FileResponse = "server-error" | "unauthorized" | "invalid-parameters" | "no-file" | string;
+interface UploadFileRequestBody {
+  folderPath: string;
+}
+type UploadFileResponse =
+  | "unauthorized"
+  | "missing-parameters"
+  | "invalid-parameters"
+  | "file-exists"
+  | "invalid-folder"
+  | "server-error"
+  | "done";
 
-// Get folder contents
+interface DeleteFileRequestBody {
+  folderPath: string;
+  fileName: string;
+}
+type DeleteFileResponse =
+  | "unauthorized"
+  | "missing-parameters"
+  | "server-error"
+  | "done"
+  | "no-file";
+// #endregion
+
+
+// #region Folder
 interface GetFolderContentsRequestBody {
-	folderPath: string;
+  folderPath: string;
 }
-
 type GetFolderContentsResponse =
-	| "unauthorized"
-	| "invalid-parameters"
-	| "server-error"
-	| Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
-	| "no-folder";
+  | "unauthorized"
+  | "missing-parameters"
+  | "server-error"
+  | Array<{ isDirectory: boolean; fileName: string; fileSize: number }>
+  | "no-folder";
 
-// Create folder
 interface CreateFolderRequestBody {
-	folderPath: string;
+  folderPath: string;
 }
-
 type CreateFolderResponse =
-	| "unauthorized"
-	| "invalid-parameters"
-	| "server-error"
-	| "done"
-	| "folder-exists"
-	| "invalid-name";
+  | "unauthorized"
+  | "missing-parameters"
+  | "server-error"
+  | "done"
+  | "folder-exists"
+  | "invalid-name";
+// #endregion
 
 // Permanent delete
 interface PermanentDeleteFileOrFolderRequestBody {
-	filePath: string;
+  filePath: string;
 }
 
-type PermanentDeleteFileOrFolderResponse = "unauthorized" | "invalid-parameters" | "server-error" | "done" | "no-file";
+type PermanentDeleteFileOrFolderResponse =
+  | "unauthorized"
+  | "invalid-parameters"
+  | "server-error"
+  | "done"
+  | "no-file";
 
 export type {
-	FileRequestBody,
-	FileResponse,
-	GetFolderContentsRequestBody,
-	GetFolderContentsResponse,
-	CreateFolderRequestBody,
-	CreateFolderResponse,
-	PermanentDeleteFileOrFolderRequestBody,
-	PermanentDeleteFileOrFolderResponse,
+  FileRequestBody,
+  FileResponse,
+  UploadFileRequestBody,
+  UploadFileResponse,
+  DeleteFileRequestBody,
+  DeleteFileResponse,
+  GetFolderContentsRequestBody,
+  GetFolderContentsResponse,
+  CreateFolderRequestBody,
+  CreateFolderResponse,
+  PermanentDeleteFileOrFolderRequestBody,
+  PermanentDeleteFileOrFolderResponse,
 };

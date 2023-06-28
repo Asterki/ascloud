@@ -4,6 +4,7 @@ import React, { ChangeEvent } from "react";
 import { get, set } from "idb-keyval";
 import axios, { AxiosResponse } from "axios";
 import crypto from "crypto";
+import path from "path";
 
 // Component Imports
 import Head from "next/head";
@@ -147,6 +148,20 @@ const Home: NextPage<PageProps> = (props) => {
 			};
 		},
 
+		deleteFile: async (fileName: string) => {
+			const folderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
+				method: "POST",
+				withCredentials: true,
+				url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/permanent-delete`,
+				params: {
+					filePath: path.join(currentPath, fileName),
+				},
+			});
+
+			console.log(folderResponse.data);
+			updateFolderContents();
+		},
+
 		dataURLtoFile: (fileContent: string, fileName: string) => {
 			let arr = fileContent.split(",");
 			let mime = "";
@@ -210,7 +225,7 @@ const Home: NextPage<PageProps> = (props) => {
 			method: "POST",
 			withCredentials: true,
 			url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/get-folder-contents`,
-			params: {
+			data: {
 				folderPath: currentPath,
 			} as GetFolderContentsRequestBody,
 		});
@@ -238,21 +253,7 @@ const Home: NextPage<PageProps> = (props) => {
 					cryptoMethods.generateKeys();
 				} else {
 					store.dispatch(setKeys({ iv: retrievedIV, key: retrievedKey }));
-
-					// Get the root folder contents
-					const rootFolderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
-						method: "POST",
-						withCredentials: true,
-						url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/get-folder-contents`,
-						params: {
-							folderPath: "/",
-						} as GetFolderContentsRequestBody,
-					});
-
-					if (typeof rootFolderResponse.data == "object") {
-						setFolderContents(rootFolderResponse.data);
-						setIsLoadingContents(false);
-					}
+					updateFolderContents();
 				}
 			}
 		})();
@@ -289,7 +290,7 @@ const Home: NextPage<PageProps> = (props) => {
 						<ContextMenu.Portal>
 							<ContextMenu.Content className={"context-menu-content"}>
 								<button onClick={() => folderViewMethods.downloadFile(file.fileName)}>Download</button>
-								<button>Delete</button>
+								<button onClick={() => folderViewMethods.deleteFile(file.fileName)}>Delete</button>
 								<button>View Properties</button>
 							</ContextMenu.Content>
 						</ContextMenu.Portal>
