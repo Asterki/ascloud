@@ -136,24 +136,23 @@ const getFolderContents = (
 	return results;
 };
 
-const createFolder = (userID: string, folderPath: string): "done" | "folder-exists" | "invalid-name" => {
+const createFolder = (userID: string, folderPath: string, folderName: string) => {
 	const folderNameRegex = /^[^\\/:*?"<>|]+$/;
-	if (!folderNameRegex.test(folderPath)) return "invalid-name";
+	if (!folderNameRegex.test(folderName)) return "invalid-name";
 
-	const folderFound = addTrailingSlash(path.join(__dirname, `${storageRoot}/${userID}/files${folderPath}`)); // Get the route
+	const folderFound = path.join(__dirname, `${storageRoot}/${userID}/files${folderPath}`, folderName); // Get the route
 	if (!folderFound.startsWith(path.join(__dirname, `${storageRoot}/${userID}/files`))) return "invalid-name";
 
 	// Get the information about that folder path
-	const stats = fs.statSync(folderFound);
 
-	if (stats.isDirectory()) {
-		// Check if the folder exists
-		return "folder-exists";
+	// Check if the folder exists
+	if (fs.existsSync(folderFound)) {
+		const stats = fs.statSync(folderFound);
+		if (stats.isDirectory()) return "folder-exists";
 	} else {
 		fs.mkdirpSync(folderFound);
+		return "done";
 	}
-
-	return "done";
 };
 
 const deleteFolder = (userID: string, folderPath: string, folderName: string) => {

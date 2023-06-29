@@ -49,6 +49,7 @@ type GetFolderContentsResponse =
 // Create Folder
 interface CreateFolderRequestBody {
 	folderPath: string;
+	folderName: string;
 }
 type CreateFolderResponse =
 	| "unauthorized"

@@ -165,13 +165,18 @@ router.post("/folder", (req, res: express.Response<RouteTypes.CreateFolderRespon
 		const parsedBody = z
 			.object({
 				folderPath: z.string(),
+				folderName: z.string(),
 			})
 			.required()
 			.safeParse(req.body);
 
 		if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("missing-parameters");
 
-		const results = storageService.createFolder((req.user as User).userID, parsedBody.data.folderPath);
+		const results = storageService.createFolder(
+			(req.user as User).userID,
+			parsedBody.data.folderPath,
+			parsedBody.data.folderName
+		);
 		res.send(results);
 	} catch (err: unknown) {
 		res.status(500).send("server-error");

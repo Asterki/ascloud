@@ -2,7 +2,7 @@
 // Lib Imports
 import React, { ChangeEvent } from "react";
 import { get, set } from "idb-keyval";
-import axios, { AxiosResponse } from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
 import crypto from "crypto";
 
 // Component Imports
@@ -207,6 +207,28 @@ const Home: NextPage<PageProps> = (props) => {
 			}
 		},
 
+		createFolder: async () => {
+			const folderName = prompt("Enter the name of the folder");
+			if (!folderName) return;
+
+			try {
+				const response: AxiosResponse<StorageServiceAPITypes.CreateFolderResponse> = await axios({
+					method: "POST",
+					url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/folder`,
+					withCredentials: true,
+					data: {
+						folderPath: currentPath,
+						folderName: folderName,
+					} as StorageServiceAPITypes.CreateFolderRequestBody,
+				});
+
+				return updateFolderContents();
+			} catch (error: any) {
+				console.log(error);
+				setCriticalErrorModalOpen(true);
+			}
+		},
+
 		dataURLtoFile: (fileContent: string, fileName: string) => {
 			let arr = fileContent.split(",");
 			let mime = "";
@@ -361,7 +383,13 @@ const Home: NextPage<PageProps> = (props) => {
 					{/* Folder actions */}
 					<div className={styles["folder-navbar"]}>
 						<Img width={25} height={25} src="/svg/delete-bin.svg" alt="" />
-						<Img width={25} height={25} src="/svg/folder-plus.svg" alt="" />
+						<Img
+							width={25}
+							height={25}
+							src="/svg/folder-plus.svg"
+							alt=""
+							onClick={() => folderViewMethods.createFolder()}
+						/>
 						<Img width={25} height={25} src="/svg/link.svg" alt="" />
 						<Img
 							width={20}
@@ -376,7 +404,9 @@ const Home: NextPage<PageProps> = (props) => {
 					{/* Folder path */}
 					<div className={styles["path-navbar"]}>
 						<p>Path: {currentPath}</p>
-						{isLoadingContents && <Img width={25} height={25} src="/svg/cog.svg" alt="folder-icon" />}
+						{isLoadingContents && (
+							<Img width={25} height={25} src="/svg/settings-cog.svg" alt="folder-icon" />
+						)}
 					</div>
 
 					{/* Folder contents view */}
