@@ -103,8 +103,32 @@ router.delete("/file", async (req, res: express.Response<RouteTypes.DeleteFileRe
 });
 
 // Rename a file
-router.patch("/file", (req, res) => {
-	return res.status(501);
+router.patch("/file", async (req, res: express.Response<RouteTypes.RenameFileResponse>) => {
+	if (!req.isAuthenticated() || req.user == undefined) return res.status(403).send("unauthorized");
+
+	try {
+		// Ensure the route is there
+		const parsedBody = z
+			.object({
+				folderPath: z.string(),
+				fileName: z.string(),
+				newName: z.string(),
+			})
+			.required()
+			.safeParse(req.query);
+
+		if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("missing-parameters");
+
+		const results = await storageService.renameFile(
+			(req.user as User).userID,
+			parsedBody.data.folderPath,
+			parsedBody.data.fileName,
+			parsedBody.data.newName
+		);
+		res.send(results);
+	} catch (err: unknown) {
+		res.status(500).send("server-error");
+	}
 });
 // #endregion
 
@@ -142,7 +166,7 @@ router.post("/folder", (req, res: express.Response<RouteTypes.CreateFolderRespon
 				folderPath: z.string(),
 			})
 			.required()
-			.safeParse(req.query);
+			.safeParse(req.body);
 
 		if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("missing-parameters");
 
@@ -154,12 +178,59 @@ router.post("/folder", (req, res: express.Response<RouteTypes.CreateFolderRespon
 });
 
 // Delete folder
-router.delete("/folder", (req, RouteTypes) => {});
+router.delete("/folder", (req, res: express.Response<RouteTypes.DeleteFolderResponse>) => {
+	if (!req.isAuthenticated() || req.user == undefined) return res.status(403).send("unauthorized");
+
+	try {
+		// Ensure the route is there
+		const parsedBody = z
+			.object({
+				folderPath: z.string(),
+				folderName: z.string(),
+			})
+			.required()
+			.safeParse(req.query);
+
+		if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("missing-parameters");
+
+		const results = storageService.deleteFolder(
+			(req.user as User).userID,
+			parsedBody.data.folderPath,
+			parsedBody.data.folderName
+		);
+		res.send(results);
+	} catch (err: unknown) {
+		res.status(500).send("server-error");
+	}
+});
+
+// Rename folder
+router.patch("/folder", (req, res: express.Response<RouteTypes.RenameFolderResponse>) => {
+	if (!req.isAuthenticated() || req.user == undefined) return res.status(403).send("unauthorized");
+
+	try {
+		// Ensure the route is there
+		const parsedBody = z
+			.object({
+				folderPath: z.string(),
+				newName: z.string(),
+			})
+			.required()
+			.safeParse(req.query);
+
+		if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("missing-parameters");
+
+		const results = storageService.renameFolder(
+			(req.user as User).userID,
+			parsedBody.data.folderPath,
+			parsedBody.data.newName
+		);
+		res.send(results);
+	} catch (err: unknown) {
+		res.status(500).send("server-error");
+	}
+});
 // #endregion
-
-router.post("/delete", (req, res) => {});
-
-router.post("/rename", (req, res) => {});
 
 router.post("/share", (req, res) => {});
 

@@ -70,7 +70,10 @@ const deleteFile = async (userID: string, folderPath: string, fileName: string) 
 		const dateDeleted = new Date(Date.now());
 		fs.renameSync(
 			fileFound,
-			path.join(__dirname, `${storageRoot}/${userID}/bin/${fileName} - ${dateDeleted.toLocaleDateString().split("/").join("-")}`)
+			path.join(
+				__dirname,
+				`${storageRoot}/${userID}/bin/${fileName} - ${dateDeleted.toLocaleDateString().split("/").join("-")}`
+			)
 		);
 		return "done";
 	} else {
@@ -166,7 +169,7 @@ const deleteFolder = (userID: string, folderPath: string, folderName: string) =>
 		);
 		return "done";
 	} else {
-		return "no-file";
+		return "no-folder";
 	}
 };
 
@@ -185,7 +188,7 @@ const renameFolder = (userID: string, folderPath: string, newName: string) => {
 		fs.renameSync(fileFound, newPath);
 		return "done";
 	} else {
-		return "no-file";
+		return "no-folder";
 	}
 };
 // #endregion
