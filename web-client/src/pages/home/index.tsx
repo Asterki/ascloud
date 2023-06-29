@@ -4,7 +4,6 @@ import React, { ChangeEvent } from "react";
 import { get, set } from "idb-keyval";
 import axios, { AxiosResponse } from "axios";
 import crypto from "crypto";
-import path from "path";
 
 // Component Imports
 import Head from "next/head";
@@ -193,7 +192,8 @@ const Home: NextPage<PageProps> = (props) => {
 					withCredentials: true,
 					url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/file`,
 					params: {
-						filePath: path.join(currentPath, fileName),
+						folderPath: currentPath,
+						fileName: fileName,
 					},
 				});
 

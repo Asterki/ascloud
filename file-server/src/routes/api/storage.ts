@@ -24,7 +24,7 @@ router.get("/file", (req, res: express.Response<RouteTypes.FileResponse>) => {
 				fileName: z.string(),
 			})
 			.required()
-			.safeParse(req.body);
+			.safeParse(req.query);
 
 		if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("missing-parameters");
 
@@ -67,7 +67,7 @@ router.post(
 				return res.status(400).send("invalid-parameters");
 
 			// @ts-ignore
-			const result = await storageService.upload(req, res, filePath, req.files.file[0].originalname);
+			const result = await storageService.uploadFile(req, res, filePath, req.files.file[0].originalname);
 			res.send(result);
 		} catch (err: unknown) {
 			res.status(500).send("server-error");
@@ -120,7 +120,7 @@ router.get("/folder", (req, res: express.Response<RouteTypes.GetFolderContentsRe
 				folderPath: z.string(),
 			})
 			.required()
-			.safeParse(req.body);
+			.safeParse(req.query);
 
 		if (!parsedBody.success && "error" in parsedBody) return res.status(400).send("missing-parameters");
 

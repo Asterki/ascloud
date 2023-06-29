@@ -70,7 +70,7 @@ const deleteFile = async (userID: string, folderPath: string, fileName: string) 
 		const dateDeleted = new Date(Date.now());
 		fs.renameSync(
 			fileFound,
-			`${storageRoot}/${userID}/bin/${fileName} - ${dateDeleted.toLocaleDateString().split("/").join("-")}`
+			path.join(__dirname, `${storageRoot}/${userID}/bin/${fileName} - ${dateDeleted.toLocaleDateString().split("/").join("-")}`)
 		);
 		return "done";
 	} else {
