@@ -19,7 +19,7 @@ import { RootState } from "@/store";
 // Styles And Types Imports
 import styles from "@/styles/accounts/register.module.scss";
 import { GetServerSideProps, NextPage } from "next";
-import { RegisterRequestBody, RegisterResponse } from "../../../../shared/types/api/accounts";
+import * as AccountServiceAPITypes from "../../../../shared/types/api/accounts";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	// Check if the user is logged in
@@ -112,10 +112,10 @@ const Register: NextPage = () => {
 				});
 
 			// Send the request
-			const response: AxiosResponse<RegisterResponse> = await axios({
+			const response: AxiosResponse<AccountServiceAPITypes.RegisterResponse> = await axios({
 				url: "/api/accounts/register",
 				method: "POST",
-				data: parsedBody.data as RegisterRequestBody,
+				data: parsedBody.data as AccountServiceAPITypes.RegisterRequestBody,
 			});
 
 			// Switch on the response

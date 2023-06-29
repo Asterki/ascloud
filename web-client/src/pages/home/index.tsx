@@ -20,7 +20,7 @@ import { setKeys } from "@/store/keysSlice";
 import styles from "@/styles/main/home/index.module.scss";
 import { GetServerSideProps, NextPage } from "next";
 import { User } from "@/../../shared/types/models";
-import { GetFolderContentsRequestBody, GetFolderContentsResponse } from "@/../../shared/types/api/storage";
+import * as StorageServiceAPITypes from "@/../../shared/types/api/storage";
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
 	if (!context.req.isAuthenticated())
@@ -49,8 +49,7 @@ const Home: NextPage<PageProps> = (props) => {
 	const lang = appState.page.lang.accounts.register;
 	const keys = appState.keys;
 
-	// * Page State
-	// #region
+	// #region Page State
 	// Wether the just logged in modal will show up
 	const [welcomeModalOpen, setWelcomeModalOpen] = React.useState(props.login);
 
@@ -62,13 +61,11 @@ const Home: NextPage<PageProps> = (props) => {
 	const [isLoadingContents, setIsLoadingContents] = React.useState<boolean>(true);
 	// #endregion
 
-	// * Page refs
-	// #region
+	// #region Page refs
 	const fileInput = React.useRef<HTMLInputElement>(null);
 	// #endregion
 
-	// * Functions
-	// #region
+	// #region Functions
 	const cryptoMethods = {
 		encrypt: (text: string, key: string, iv: string) => {
 			const cipher = crypto.createCipheriv("aes-256-ctr", key, iv); // Create the cipher to encrypt the text
@@ -107,6 +104,38 @@ const Home: NextPage<PageProps> = (props) => {
 	};
 
 	const folderViewMethods = {
+		downloadFile: async (fileName: string) => {
+			try {
+				const response = await axios({
+					url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/file`,
+					method: "GET",
+					withCredentials: true,
+					params: {
+						folderPath: currentPath,
+						fileName: fileName,
+					},
+				});
+
+				// Decrypt the file
+				const decryptedContent = cryptoMethods.decrypt(response.data, keys.storageKey!, keys.storageIV!);
+				const decryptedFile = folderViewMethods.dataURLtoFile(decryptedContent, fileName);
+
+				// Download the file
+				const url = URL.createObjectURL(decryptedFile);
+				const link = document.createElement("a");
+
+				link.href = url;
+				link.download = fileName;
+				link.click();
+				URL.revokeObjectURL(url);
+			} catch (error: any) {
+				if (error.name == "AxiosError") {
+					alert("There was an error with the request");
+					console.log(error);
+				}
+			}
+		},
+
 		uploadFile: async () => {
 			// TODO: add upload confirmation
 
@@ -132,34 +161,52 @@ const Home: NextPage<PageProps> = (props) => {
 				data.append("file", encryptedFile);
 				data.append("folderPath", currentPath);
 
-				// Upload the file
-				const response = await axios({
-					url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/upload`,
-					method: "POST",
-					withCredentials: true,
-					data: data,
-				});
+				try {
+					// Upload the file
+					const response: AxiosResponse<StorageServiceAPITypes.UploadFileResponse> = await axios({
+						url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/file`,
+						method: "POST",
+						withCredentials: true,
+						data: data as unknown as StorageServiceAPITypes.UploadFileRequestBody,
+					});
 
-				if (response.data == "done") {
-					fileInput.current!.value = "";
-					fileInput.current!.files = null;
-					return updateFolderContents();
+					if (response.data == "done") {
+						fileInput.current!.value = "";
+						fileInput.current!.files = null;
+						return updateFolderContents();
+					}
+				} catch (error: any) {
+					if (error.name == "AxiosError") {
+						alert("There was an error with the request");
+						console.log(error);
+					}
 				}
 			};
 		},
 
 		deleteFile: async (fileName: string) => {
-			const folderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
-				method: "POST",
-				withCredentials: true,
-				url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/permanent-delete`,
-				params: {
-					filePath: path.join(currentPath, fileName),
-				},
-			});
+			// TODO: Show confirmation form
 
-			console.log(folderResponse.data);
-			updateFolderContents();
+			try {
+				const folderResponse: AxiosResponse<StorageServiceAPITypes.DeleteFileResponse> = await axios({
+					method: "DELETE",
+					withCredentials: true,
+					url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/file`,
+					params: {
+						filePath: path.join(currentPath, fileName),
+					},
+				});
+
+				// TODO: Add a modal that says "file deleted, moved to the bin, will be deleted in 10 days"
+
+				console.log(folderResponse.data);
+				updateFolderContents();
+			} catch (error: any) {
+				if (error.name == "AxiosError") {
+					alert("There was an error with the request");
+					console.log(error);
+				}
+			}
 		},
 
 		dataURLtoFile: (fileContent: string, fileName: string) => {
@@ -176,31 +223,6 @@ const Home: NextPage<PageProps> = (props) => {
 				u8arr[n] = bstr.charCodeAt(n);
 			}
 			return new File([u8arr], fileName, { type: mime });
-		},
-
-		downloadFile: async (fileName: string) => {
-			const response = await axios({
-				url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/file`,
-				method: "POST",
-				withCredentials: true,
-				data: {
-					folderPath: currentPath,
-					fileName: fileName,
-				},
-			});
-
-			// Decrypt the file
-			const decryptedContent = cryptoMethods.decrypt(response.data, keys.storageKey!, keys.storageIV!);
-			const decryptedFile = folderViewMethods.dataURLtoFile(decryptedContent, fileName);
-
-			// Download the file
-			const url = URL.createObjectURL(decryptedFile);
-			const link = document.createElement("a");
-
-			link.href = url;
-			link.download = fileName;
-			link.click();
-			URL.revokeObjectURL(url);
 		},
 	};
 
@@ -221,26 +243,32 @@ const Home: NextPage<PageProps> = (props) => {
 	};
 
 	const updateFolderContents = async () => {
-		const folderResponse: AxiosResponse<GetFolderContentsResponse> = await axios({
-			method: "POST",
-			withCredentials: true,
-			url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/get-folder-contents`,
-			data: {
-				folderPath: currentPath,
-			} as GetFolderContentsRequestBody,
-		});
+		try {
+			const folderResponse: AxiosResponse<StorageServiceAPITypes.GetFolderContentsResponse> = await axios({
+				method: "GET",
+				withCredentials: true,
+				url: `${process.env.NEXT_PUBLIC_FILE_SERVER_HOST}/api/storage/folder`,
+				params: {
+					folderPath: currentPath,
+				} as StorageServiceAPITypes.GetFolderContentsRequestBody,
+			});
 
-		if (typeof folderResponse.data == "object") {
-			setFolderContents(folderResponse.data);
-			setIsLoadingContents(false);
-		} else {
-			// TODO: error handling here
+			if (typeof folderResponse.data == "object") {
+				setFolderContents(folderResponse.data);
+				setIsLoadingContents(false);
+			} else {
+				// TODO: error handling here
+			}
+		} catch (error: any) {
+			if (error.name == "AxiosError") {
+				alert("There was an error with the request");
+				console.log(error);
+			}
 		}
 	};
 	// #endregion
 
-	// * Page listeners
-	// #region
+	// #region Page listeners
 	React.useEffect(() => {
 		(async () => {
 			if (!keys.storageIV || !keys.storageKey) {
@@ -267,8 +295,7 @@ const Home: NextPage<PageProps> = (props) => {
 	}, [currentPath]);
 	// #endregion
 
-	// * Mapped Elements
-	// #region
+	// #region Mapped Elements
 	const folderContentsElement = folderContents
 		.sort((item) => {
 			return item.isDirectory ? -1 : 1; // Folders are shown first
@@ -318,7 +345,7 @@ const Home: NextPage<PageProps> = (props) => {
 		});
 	// #endregion
 
-	// * Page
+	// # Page
 	return (
 		<div className={styles["page"]}>
 			{/* <Modal modalOpen={welcomeModalOpen} modalTitle="Welcome">
