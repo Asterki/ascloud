@@ -1,5 +1,6 @@
 import React from "react";
 
+import Img from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 
@@ -113,14 +114,14 @@ const Navbar: NextPage<ComponentProps> = (props) => {
 							onClick={() => router.push("/home")}
 							className={props.currentPage == "personal" ? styles["active"] : ""}
 						>
-							<img src="/svg/folder.svg" alt="" />
+							<Img width={30} height={30} src="/svg/folder.svg" alt="folder" />
 							Personal folder
 						</button>
 						<button
 							onClick={() => router.push("/home/shared")}
 							className={props.currentPage == "shared" ? styles["active"] : ""}
 						>
-							<img src="/svg/link.svg" alt="" />
+							<Img width={30} height={30} src="/svg/link.svg" alt="link" />
 							Shared
 						</button>
 					</div>
@@ -129,7 +130,7 @@ const Navbar: NextPage<ComponentProps> = (props) => {
 							onClick={() => router.push("/home/trash")}
 							className={props.currentPage == "trash" ? styles["active"] : ""}
 						>
-							<img src="/svg/delete-bin.svg" alt="" />
+							<Img width={30} height={30} src="/svg/delete-bin.svg" alt="bin" />
 							Trash
 						</button>
 						<br />

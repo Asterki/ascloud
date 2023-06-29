@@ -8,6 +8,7 @@ import crypto from "crypto";
 // Component Imports
 import Head from "next/head";
 import Navbar from "@/components/navbar";
+import Img from "next/image";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import ErrorModal from "../../components/error";
 
@@ -286,7 +287,6 @@ const Home: NextPage<PageProps> = (props) => {
 		// Every time the user interacts with the folders, or changes paths
 		// It will retrieve the folders on that path
 		updateFolderContents();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentPath]);
 	// #endregion
 
@@ -301,7 +301,7 @@ const Home: NextPage<PageProps> = (props) => {
 					<ContextMenu.Root key={file.fileName}>
 						<ContextMenu.Trigger className="ContextMenuTrigger">
 							<div className={`${styles["file"]} ${isLoadingContents ? styles["file-inactive"] : ""}`}>
-								<img src="/svg/file.svg" alt="" />
+								<Img width={25} height={25} src="/svg/file.svg" alt="file-icon" />
 								<p>
 									{file.fileName} - {getReadableFileSizeString(file.fileSize)}
 								</p>
@@ -330,7 +330,7 @@ const Home: NextPage<PageProps> = (props) => {
 						}}
 						className={`${styles["folder"]} ${isLoadingContents ? styles["folder-inactive"] : ""}`}
 					>
-						<img src="/svg/folder.svg" alt="" />
+						<Img width={25} height={25} src="/svg/folder.svg" alt="folder-icon" />
 						<p>{file.fileName}</p>
 						<br />
 						<br />
@@ -360,17 +360,23 @@ const Home: NextPage<PageProps> = (props) => {
 				<div className={styles["current-folder"]}>
 					{/* Folder actions */}
 					<div className={styles["folder-navbar"]}>
-						<img src="/svg/delete-bin.svg" alt="" />
-						<img src="/svg/folder-plus.svg" alt="" />
-						<img src="/svg/link.svg" alt="" />
-						<img src="/svg/upload.svg" alt="upload" onClick={() => fileInput.current?.click()} />
+						<Img width={25} height={25} src="/svg/delete-bin.svg" alt="" />
+						<Img width={25} height={25} src="/svg/folder-plus.svg" alt="" />
+						<Img width={25} height={25} src="/svg/link.svg" alt="" />
+						<Img
+							width={20}
+							height={20}
+							src="/svg/upload.svg"
+							alt="upload"
+							onClick={() => fileInput.current?.click()}
+						/>
 						<button onClick={updateFolderContents}>Update Folder Contents</button>
 					</div>
 
 					{/* Folder path */}
 					<div className={styles["path-navbar"]}>
 						<p>Path: {currentPath}</p>
-						{isLoadingContents && <img src="/svg/settings-cog.svg" alt="" />}
+						{isLoadingContents && <Img width={25} height={25} src="/svg/cog.svg" alt="folder-icon" />}
 					</div>
 
 					{/* Folder contents view */}
@@ -385,7 +391,7 @@ const Home: NextPage<PageProps> = (props) => {
 								}}
 								className={`${styles["folder"]} ${isLoadingContents ? styles["folder-inactive"] : ""}`}
 							>
-								<img src="/svg/folder.svg" alt="" />
+								<Img width={25} height={25} src="/svg/folder.svg" alt="folder-icon" />
 								<p>..</p>
 								<br />
 								<br />
