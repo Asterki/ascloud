@@ -1,3 +1,4 @@
+import axios from "axios";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import expressSession from "express-session";
@@ -103,6 +104,15 @@ const registerUser = async (email: string, username: string, password: string) =
 			secret: "",
 		},
 	} as User);
+
+	// Make a request to the file server to create the user folders there
+	await axios({
+		method: "POST",
+		url: `${config.fileServer.url}/api/accounts/user-folders`,
+		data: {
+			userID: userID,
+		},
+	});
 
 	// Create the user folders
 	mkdirp.sync(path.join(__dirname, `../../storage/${userID}/files`));

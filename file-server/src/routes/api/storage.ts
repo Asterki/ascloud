@@ -2,6 +2,7 @@ import express from "express";
 import { z } from "zod";
 
 import path from "path";
+import fs from "fs-extra";
 import multer from "multer";
 
 import * as storageService from "../../../../file-server/src/services/storage";

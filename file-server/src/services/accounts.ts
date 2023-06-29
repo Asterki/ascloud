@@ -2,14 +2,15 @@ import expressSession from "express-session";
 import mongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
 import passport from "passport";
-import mongoose from "mongoose";
+import path from "path";
+import fs from "fs-extra";
 
 import { app, config } from "../";
 
 import UserModel from "../models/user";
 
-import type { User } from "../../../shared/types/models";
 import { Document } from "mongoose";
+import { User } from "../../../shared/types/models";
 
 // Cookie session
 const sessionStore = mongoStore.create({
@@ -37,6 +38,27 @@ app.use(passport.session());
 passport.serializeUser(UserModel.serializeUser());
 passport.deserializeUser(UserModel.deserializeUser());
 
-const createUserFolder = () => {};
+// #region Users related
+const storageRoot = process.env.NODE_ENV == "development" ? "../../storage" : "../../../../storage";
+const createUserFolders = async (userID: string) => {
+	// Check if the userID provided is from an actual user
+	const user: (User & Document) | null = await UserModel.findOne({ userID: userID });
+	if (!user) return "no-user";
 
-export { createUserFolder };
+	const userFolderRoot = path.join(__dirname, storageRoot, userID);
+
+	// Ensure the folder is not yet there
+	const stats = fs.statSync(userFolderRoot);
+	if (stats.isDirectory()) {
+		return "folder-exists";
+	} else {
+		fs.mkdirpSync(path.join(userFolderRoot, "/files"));
+		fs.mkdirpSync(path.join(userFolderRoot, "/temp"));
+		fs.mkdirpSync(path.join(userFolderRoot, "/shared"));
+		fs.mkdirpSync(path.join(userFolderRoot, "/bin"));
+
+		return "done";
+	}
+};
+
+export { createUserFolders };
