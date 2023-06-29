@@ -26,16 +26,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 };
 
 const Index: NextPage = () => {
-	const sendRequest = async () => {
-		const response = await axios({
-			url: "http://localhost:8080/api/test/test",
-			method: "POST",
-			withCredentials: true,
-		});
-
-		console.log(response.data);
-	};
-
 	return (
 		<div className={styles["page"]}>
 			<main>
@@ -101,10 +91,6 @@ const Index: NextPage = () => {
 						<h1>AsCloud</h1>
 						<p>Open source cloud/local storage service</p>
 					</motion.div>
-
-					<div className={styles["features"]}>
-						<button onClick={() => sendRequest()}>Click</button>
-					</div>
 				</div>
 			</main>
 		</div>

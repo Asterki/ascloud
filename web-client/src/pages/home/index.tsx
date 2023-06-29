@@ -9,6 +9,7 @@ import crypto from "crypto";
 import Head from "next/head";
 import Navbar from "@/components/navbar";
 import * as ContextMenu from "@radix-ui/react-context-menu";
+import ErrorModal from "../../components/error";
 
 // State Imports
 import { store, RootState } from "@/store";
@@ -58,6 +59,8 @@ const Home: NextPage<PageProps> = (props) => {
 	>([]);
 	const [currentPath, setCurrentPath] = React.useState("/");
 	const [isLoadingContents, setIsLoadingContents] = React.useState<boolean>(true);
+
+	const [isCriticalErrorModalOpen, setCriticalErrorModalOpen] = React.useState<boolean>(false);
 	// #endregion
 
 	// #region Page refs
@@ -128,10 +131,8 @@ const Home: NextPage<PageProps> = (props) => {
 				link.click();
 				URL.revokeObjectURL(url);
 			} catch (error: any) {
-				if (error.name == "AxiosError") {
-					alert("There was an error with the request");
-					console.log(error);
-				}
+				console.log(error);
+				setCriticalErrorModalOpen(true);
 			}
 		},
 
@@ -175,10 +176,8 @@ const Home: NextPage<PageProps> = (props) => {
 						return updateFolderContents();
 					}
 				} catch (error: any) {
-					if (error.name == "AxiosError") {
-						alert("There was an error with the request");
-						console.log(error);
-					}
+					console.log(error);
+					setCriticalErrorModalOpen(true);
 				}
 			};
 		},
@@ -202,10 +201,8 @@ const Home: NextPage<PageProps> = (props) => {
 				console.log(folderResponse.data);
 				updateFolderContents();
 			} catch (error: any) {
-				if (error.name == "AxiosError") {
-					alert("There was an error with the request");
-					console.log(error);
-				}
+				console.log(error);
+				setCriticalErrorModalOpen(true);
 			}
 		},
 
@@ -260,10 +257,8 @@ const Home: NextPage<PageProps> = (props) => {
 				// TODO: error handling here
 			}
 		} catch (error: any) {
-			if (error.name == "AxiosError") {
-				alert("There was an error with the request");
-				console.log(error);
-			}
+			console.log(error);
+			setCriticalErrorModalOpen(true);
 		}
 	};
 	// #endregion
@@ -404,6 +399,8 @@ const Home: NextPage<PageProps> = (props) => {
 					</form>
 				</div>
 			</main>
+
+			<ErrorModal modalOpen={isCriticalErrorModalOpen} />
 		</div>
 	);
 };
